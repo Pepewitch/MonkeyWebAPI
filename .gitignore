@@ -3,7 +3,6 @@ dist/
 
 # Dependency directory
 node_modules/
-package-lock.json
 
 # Environment variables
 .env
