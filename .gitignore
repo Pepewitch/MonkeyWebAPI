@@ -13,3 +13,6 @@ Thumbs.db
 
 # Debug log
 log/
+
+# Test log
+coverage/

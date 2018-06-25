@@ -29,7 +29,7 @@ export class Connection {
                     encrypt: true,
                 },
                 host: process.env.DB_SERVER,
-                logging: false, // Enable sql logging
+                logging: false,
             });
     }
 
