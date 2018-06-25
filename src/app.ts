@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express, { urlencoded } from "express";
 import expressValidator from "express-validator";
 import morgan from "morgan";
+import { router } from "./controllers/router";
 import logger from "./util/logger";
 
 dotenv.config({ path: ".env" });
@@ -27,5 +28,7 @@ app.use(morgan("dev", {
         },
     },
 }));
+
+app.use(router);
 
 export default app;
