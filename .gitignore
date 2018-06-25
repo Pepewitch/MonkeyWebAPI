@@ -11,3 +11,6 @@ package-lock.json
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Debug log
+log/

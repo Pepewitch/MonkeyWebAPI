@@ -3,8 +3,7 @@ import { existsSync } from "fs";
 import logger from "./logger";
 
 if (!existsSync(".env")) {
-    logger.error(".env file not found. Create one using .env.example");
-    process.exit(1);
+    console.warn(".env file not found. Create one using .env.example");
 }
 
 dotenv.config();

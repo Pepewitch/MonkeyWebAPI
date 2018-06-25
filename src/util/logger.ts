@@ -1,9 +1,13 @@
-import winston, { createLogger } from "winston";
+import { createLogger, format, transports } from "winston";
 
 const logger = createLogger({
     transports: [
-        new (winston.transports.Console)({ level: process.env.NODE_ENV === "production" ? "error" : "debug" }),
-        new (winston.transports.File)({ filename: "debug.log", level: "debug"}),
+        new (transports.Console)({
+            format: format.simple(),
+            level: process.env.NODE_ENV === "production" ? "error" : "debug",
+        }),
+        new (transports.File)({ filename: "log/debug.log", level: "debug" }),
+        new (transports.File)({ filename: "log/error.log", level: "error" }),
     ],
 });
 
