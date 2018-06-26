@@ -1,4 +1,5 @@
 import Sequelize from "sequelize";
+import { Visibility } from "../util/context";
 import { quarterModel } from "./quarter";
 import { userModel } from "./users";
 
@@ -6,9 +7,9 @@ export interface IReceiptModel {
     ID: number;
     StudentID: number;
     QuarterID: number;
-    Visibility: string;
-    createAt: Date;
-    updatedAt: Date;
+    Visibility: Visibility;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type ReceiptInstance = Sequelize.Instance<IReceiptModel> & IReceiptModel;
@@ -41,12 +42,7 @@ export function receiptModel(sequalize: Sequelize.Sequelize) {
         Visibility: {
             type: Sequelize.STRING(10),
             allowNull: false,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
+            defaultValue: Visibility.show,
         },
     };
 

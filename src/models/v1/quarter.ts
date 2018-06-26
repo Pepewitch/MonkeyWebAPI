@@ -11,8 +11,8 @@ export interface IQuarterModel {
     Type: QuarterType;
     StartDate: Date;
     EndDate: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export type QuarterInstance = Sequelize.Instance<IQuarterModel> & IQuarterModel;
@@ -40,12 +40,6 @@ export function quarterModel(sequalize: Sequelize.Sequelize) {
         EndDate: {
             type: Sequelize.DATE,
             allowNull: false,
-        },
-        createdAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
     return sequalize.define<QuarterInstance, IQuarterModel>("Quarter", attributes, {

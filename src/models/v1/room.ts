@@ -6,8 +6,8 @@ export interface IRoomModel {
     RoomName: string;
     QuarterID: number;
     MaxSeat: number;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type RoomInstance = Sequelize.Instance<IRoomModel> & IRoomModel;
@@ -35,13 +35,7 @@ export function roomModel(sequalize: Sequelize.Sequelize) {
         },
         MaxSeat: {
             type: Sequelize.INTEGER,
-            allowNull: true,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
+            allowNull: false,
         },
     };
 

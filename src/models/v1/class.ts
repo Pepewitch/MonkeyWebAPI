@@ -16,8 +16,8 @@ export interface IClassModel {
     Suggestion: string;
     ClassTimes: number;
     ClassType: string;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type ClassInstance = Sequelize.Instance<IClassModel> & IClassModel;
@@ -32,7 +32,7 @@ export function classModel(sequalize: Sequelize.Sequelize) {
             autoIncrement: true,
         },
         ClassName: {
-            type: Sequelize.STRING(64),
+            type: Sequelize.STRING,
             allowNull: false,
         },
         QuarterID: {
@@ -48,11 +48,11 @@ export function classModel(sequalize: Sequelize.Sequelize) {
             allowNull: false,
         },
         ClassSubject: {
-            type: Sequelize.STRING(8),
+            type: Sequelize.STRING(10),
             allowNull: false,
         },
         Grade: {
-            type: Sequelize.STRING(64),
+            type: Sequelize.STRING(50),
             allowNull: true,
         },
         TutorID: {
@@ -76,7 +76,7 @@ export function classModel(sequalize: Sequelize.Sequelize) {
             allowNull: true,
         },
         Suggestion: {
-            type: Sequelize.STRING(64),
+            type: Sequelize.STRING(100),
             allowNull: true,
         },
         ClassTimes: {
@@ -84,14 +84,8 @@ export function classModel(sequalize: Sequelize.Sequelize) {
             allowNull: true,
         },
         ClassType: {
-            type: Sequelize.STRING(16),
+            type: Sequelize.STRING(20),
             allowNull: true,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
 

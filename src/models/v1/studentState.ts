@@ -19,8 +19,8 @@ export interface IStudentStateModel {
     QuarterID: number;
     StudentID: number;
     Stage: StudentStage;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type StudentStateInstance = Sequelize.Instance<IStudentStateModel> & IStudentStateModel;
@@ -57,12 +57,6 @@ export function studentStateModel(sequalize: Sequelize.Sequelize) {
         Stage: {
             type: Sequelize.STRING(20),
             allowNull: false,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
 

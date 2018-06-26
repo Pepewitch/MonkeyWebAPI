@@ -1,11 +1,7 @@
 import Sequelize from "sequelize";
+import { Visibility } from "../util/context";
 import { quarterModel } from "./quarter";
 import { userModel } from "./users";
-
-export enum Visibility {
-    show = "show",
-    hide = "hide",
-}
 
 export interface IRegChatModel {
     ID: number;
@@ -14,8 +10,8 @@ export interface IRegChatModel {
     QuarterID: number;
     SenderID: number;
     Visibility: Visibility;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type RegChatInstance = Sequelize.Instance<IRegChatModel> & IRegChatModel;
@@ -60,13 +56,7 @@ export function regChatModel(sequalize: Sequelize.Sequelize) {
         Visibility: {
             type: Sequelize.STRING(10),
             allowNull: false,
-            defaultValue: "show",
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
+            defaultValue: Visibility.show,
         },
     };
 

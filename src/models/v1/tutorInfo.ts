@@ -4,8 +4,8 @@ import { userModel } from "./users";
 export interface ITutorInfoModel {
     ID: number;
     Position: string;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type TutorInfoInstance = Sequelize.Instance<ITutorInfoModel> & ITutorInfoModel;
@@ -25,12 +25,6 @@ export function tutorInfoModel(sequalize: Sequelize.Sequelize) {
         Position: {
             type: Sequelize.STRING,
             allowNull: false,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
 

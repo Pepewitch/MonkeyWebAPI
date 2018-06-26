@@ -1,16 +1,16 @@
 import Sequelize from "sequelize";
+import { Visibility } from "../util/context";
 import { submissionModel } from "./submission";
 import { userModel } from "./users";
 
 export interface ISubmissionChatModel {
     ID: number;
     SubmissionID: number;
-    ChatMessage?: string;
+    ChatMessage: string;
     SenderID: number;
-    SendTime: Date;
-    Visibility: string;
-    createAt: Date;
-    updatedAt: Date;
+    Visibility: Visibility;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type SubmissionChatInstance = Sequelize.Instance<ISubmissionChatModel> & ISubmissionChatModel;
@@ -34,7 +34,7 @@ export function SubmissionChatModel(sequalize: Sequelize.Sequelize) {
         },
         ChatMessage: {
             type: Sequelize.STRING,
-            allowNull: true,
+            allowNull: false,
         },
         SenderID: {
             type: Sequelize.INTEGER,
@@ -44,19 +44,10 @@ export function SubmissionChatModel(sequalize: Sequelize.Sequelize) {
                 key: "ID",
             },
         },
-        SendTime: {
-            type: Sequelize.DATE,
-            allowNull: true,
-        },
         Visibility: {
             type: Sequelize.STRING(10),
             allowNull: false,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
+            defaultValue: Visibility.show,
         },
     };
 

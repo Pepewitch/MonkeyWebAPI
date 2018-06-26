@@ -8,14 +8,14 @@ export interface IStudentLevelModel {
     QuarterID: number;
     Subject: string;
     Level: string;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type StudentLevelInstance = Sequelize.Instance<IStudentLevelModel> & IStudentLevelModel;
 
 // tslint:disable:object-literal-sort-keys
-export function roomModel(sequalize: Sequelize.Sequelize) {
+export function studentLevelModel(sequalize: Sequelize.Sequelize) {
     const attributes: SequelizeAttributes<IStudentLevelModel> = {
         ID: {
             type: Sequelize.INTEGER,
@@ -46,12 +46,6 @@ export function roomModel(sequalize: Sequelize.Sequelize) {
         Level: {
             type: Sequelize.STRING(10),
             allowNull: false,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
 

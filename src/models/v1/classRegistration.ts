@@ -2,13 +2,20 @@ import Sequelize from "sequelize";
 import { classModel } from "./class";
 import { userModel } from "./users";
 
+export enum RegStatus {
+    selected = "selected",
+    rejected = "rejected",
+    registered = "registered",
+    removed = "removed",
+}
+
 export interface IClassRegModel {
     ID: number;
     StudentID: number;
     ClassID: number;
-    Removed?: string;
-    createAt: Date;
-    updatedAt: Date;
+    RegStatus: RegStatus;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type ClassRegInstance = Sequelize.Instance<IClassRegModel> & IClassRegModel;
@@ -38,15 +45,10 @@ export function classRegModel(sequalize: Sequelize.Sequelize) {
                 key: "ID",
             },
         },
-        Removed: {
+        RegStatus: {
             type: Sequelize.STRING(10),
             allowNull: true,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
+            defaultValue: RegStatus.registered,
         },
     };
 

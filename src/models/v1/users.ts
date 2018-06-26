@@ -28,8 +28,8 @@ export interface IUser {
     UserStatus: UserStatus;
     Position: UserPosition;
     UserPassword?: string;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type UserInstance = Sequelize.Instance<IUser> & IUser;
@@ -85,12 +85,6 @@ export function userModel(sequalize: Sequelize.Sequelize) {
         UserPassword: {
             type: Sequelize.STRING,
             allowNull: true,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
     return sequalize.define<UserInstance, IUser>("Users", attributes, {

@@ -7,8 +7,8 @@ export interface IStudentRemarkModel {
     StudentID: number;
     QuarterID: number;
     Remark: string;
-    createAt: Date;
-    updatedAt: Date;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type StudentRemarkInstance = Sequelize.Instance<IStudentRemarkModel> & IStudentRemarkModel;
@@ -41,12 +41,6 @@ export function studentRemarkModel(sequalize: Sequelize.Sequelize) {
         Remark: {
             type: Sequelize.STRING(50),
             allowNull: false,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
         },
     };
 

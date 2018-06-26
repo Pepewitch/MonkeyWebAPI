@@ -5,9 +5,9 @@ export interface ISubmissionModel {
     ID: number;
     ClassID: number;
     SubmissionState: string;
-    SubmissionTimes?: number;
-    createAt: Date;
-    updatedAt: Date;
+    SubmissionTimes: number;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type SubmissionInstance = Sequelize.Instance<ISubmissionModel> & ISubmissionModel;
@@ -30,18 +30,12 @@ export function submissionModel(sequalize: Sequelize.Sequelize) {
             },
         },
         SubmissionState: {
-            type: Sequelize.STRING(16),
+            type: Sequelize.STRING(20),
             allowNull: false,
         },
         SubmissionTimes: {
             type: Sequelize.INTEGER,
-            allowNull: true,
-        },
-        createAt: {
-            type: Sequelize.DATE,
-        },
-        updatedAt: {
-            type: Sequelize.DATE,
+            allowNull: false,
         },
     };
 
