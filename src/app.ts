@@ -8,6 +8,15 @@ import logger from "./util/logger";
 
 dotenv.config({ path: ".env" });
 
+// tslint:disable:interface-name
+declare global {
+    namespace Express {
+        interface Request {
+            authToken?: string;
+        }
+    }
+}
+
 const app = express();
 
 // Set running port form environment
