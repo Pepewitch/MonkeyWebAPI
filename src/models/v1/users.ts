@@ -15,7 +15,7 @@ export enum UserPosition {
     mel = "mel",
 }
 
-export interface IUser {
+export interface IUserModel {
     ID: number;
     Firstname?: string;
     Lastname?: string;
@@ -32,11 +32,11 @@ export interface IUser {
     updatedAt?: Date;
 }
 
-export type UserInstance = Sequelize.Instance<IUser> & IUser;
+export type UserInstance = Sequelize.Instance<IUserModel> & IUserModel;
 
 // tslint:disable:object-literal-sort-keys
 export function userModel(sequalize: Sequelize.Sequelize) {
-    const attributes: SequelizeAttributes<IUser> = {
+    const attributes: SequelizeAttributes<IUserModel> = {
         ID: {
             type: Sequelize.INTEGER,
             allowNull: false,
@@ -87,7 +87,7 @@ export function userModel(sequalize: Sequelize.Sequelize) {
             allowNull: true,
         },
     };
-    return sequalize.define<UserInstance, IUser>("Users", attributes, {
+    return sequalize.define<UserInstance, IUserModel>("Users", attributes, {
         tableName: "Users",
     });
 }
