@@ -2,9 +2,6 @@ import Sequelize from "sequelize";
 import { classModel } from "./class";
 import { userModel } from "./users";
 
-// Doc???
-// AttendanceType -> default?
-
 export enum AttendanceType {
     present = "present",
     absent = "absent",

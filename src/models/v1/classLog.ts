@@ -3,8 +3,6 @@ import { classModel } from "./class";
 import { hbSheetModel } from "./hbSheet";
 import { userModel } from "./users";
 
-// time = date?
-
 export interface IClassLogModel {
     ID: number;
     StudentID: number;
@@ -15,6 +13,8 @@ export interface IClassLogModel {
     HBSheetID: number;
     TutorID: number;
     Progress?: string;
+    createAt?: Date;
+    updatedAt?: Date;
 }
 
 export type ClassLogInstance = Sequelize.Instance<IClassLogModel> & IClassLogModel;
@@ -78,7 +78,7 @@ export function classLogModel(sequalize: Sequelize.Sequelize) {
         },
     };
 
-    return sequalize.define<ClassLogInstance, IClassLogModel>("Room", attributes, {
-        tableName: "Room",
+    return sequalize.define<ClassLogInstance, IClassLogModel>("ClassLog", attributes, {
+        tableName: "ClassLog",
     });
 }

@@ -1,8 +1,6 @@
 import Sequelize from "sequelize";
 import { topicModel } from "./topic";
 
-// SheetPath ??
-
 export interface IHBSheetModel {
     ID: number;
     TopicID: number;

@@ -1,7 +1,8 @@
 import Sequelize from "sequelize";
 
-// Ask Tao for CommentType
 export enum CommentType {
+    comments = "comments",
+    compliments = "compliments",
 }
 
 export interface ICommentTextModel {
@@ -33,5 +34,6 @@ export function commentTextModel(sequalize: Sequelize.Sequelize) {
 
     return sequalize.define<CommentTextInstance, ICommentTextModel>("CommentText", attributes, {
         tableName: "CommentText",
+        timestamps: false,
     });
 }

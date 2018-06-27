@@ -45,5 +45,6 @@ export function commentConfigModel(sequalize: Sequelize.Sequelize) {
 
     return sequalize.define<CommentConfigInstance, ICommentConfigModel>("CommentConfig", attributes, {
         tableName: "CommentConfig",
+        timestamps: false,
     });
 }

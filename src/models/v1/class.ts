@@ -3,8 +3,6 @@ import { quarterModel } from "./quarter";
 import { roomModel } from "./room";
 import { userModel } from "./users";
 
-// ClassType -> default?
-
 export enum ClassType {
     hybrid = "hybrid",
     course = "course",
