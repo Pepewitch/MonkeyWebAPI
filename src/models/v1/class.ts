@@ -3,6 +3,14 @@ import { quarterModel } from "./quarter";
 import { roomModel } from "./room";
 import { userModel } from "./users";
 
+// ClassType -> default?
+
+export enum ClassType {
+    hybrid = "hybrid",
+    course = "course",
+    skill = "skill",
+}
+
 export interface IClassModel {
     ID: number;
     ClassName: string;
@@ -15,7 +23,7 @@ export interface IClassModel {
     ClassDescription: string;
     Suggestion: string;
     ClassTimes: number;
-    ClassType: string;
+    ClassType: ClassType;
     createAt?: Date;
     updatedAt?: Date;
 }
