@@ -44,7 +44,7 @@ export function tutorLogStatusModel(sequalize: Sequelize.Sequelize) {
         },
     };
 
-    return sequalize.define<TutorLogStatusInstance, ITutorLogStatusModel>("TutorInfo", attributes, {
-        tableName: "TutorInfo",
+    return sequalize.define<TutorLogStatusInstance, ITutorLogStatusModel>("TutorLogStatus", attributes, {
+        tableName: "TutorLogStatus",
     });
 }
