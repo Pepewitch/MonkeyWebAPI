@@ -27,7 +27,6 @@ export function portfolioModel(sequalize: Sequelize.Sequelize) {
         StudentID: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            primaryKey: true,
             references: {
                 model: userModel(sequalize),
                 key: "ID",
@@ -36,7 +35,6 @@ export function portfolioModel(sequalize: Sequelize.Sequelize) {
         HBSheetID: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            primaryKey: true,
             references: {
                 model: hbSheetModel(sequalize),
                 key: "ID",

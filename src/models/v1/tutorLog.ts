@@ -4,9 +4,9 @@ import { userModel } from "./users";
 export interface ITutorLogModel {
     ID: number;
     UserID: number;
-    TutorLogDate: Date;
-    CheckIn: Date;
-    CheckOut: Date;
+    TutorLogDate?: Date;
+    CheckIn?: Date;
+    CheckOut?: Date;
     createdAt?: Date;
     updatedAt?: Date;
 }

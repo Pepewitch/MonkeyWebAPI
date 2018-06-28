@@ -6,7 +6,7 @@ export interface ITutorLogExtraCashFlowModel {
     ID: number;
     UserID: number;
     TutorLogIntervalID: number;
-    Note: string;
+    Note?: string;
     ExtraCashFlow: number;
     createdAt?: Date;
     updatedAt?: Date;
@@ -41,7 +41,7 @@ export function tutorInfoModel(sequalize: Sequelize.Sequelize) {
         },
         Note: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         ExtraCashFlow: {
             type: Sequelize.INTEGER,

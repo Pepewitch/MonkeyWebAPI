@@ -2,11 +2,16 @@ import Sequelize from "sequelize";
 import { tutorLogIntervalModel } from "./tutorLogInterval";
 import { userModel } from "./users";
 
+export enum TutorLogStatus {
+    waiting = "waiting",
+    done = "done",
+}
+
 export interface ITutorLogStatusModel {
     ID: number;
     UserID: number;
     TutorLogIntervalID: number;
-    TutorLogStatus: string;
+    TutorLogStatus: TutorLogStatus;
     createdAt?: Date;
     updatedAt?: Date;
 }
