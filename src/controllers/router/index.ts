@@ -20,17 +20,20 @@ router.post(
     body("password").isString(),
     validateRequest,
     (req, res) => {
-        res.status(200).send(JWTAuth.getToken(req.body.userID));
+        res.status(200).send(JWTAuth.getAllToken(req.body.userID));
     },
 );
 
 router.post(
-    "/decode",
+    "/refreshToken",
     body("token").isString(),
     validateRequest,
     (req, res) => {
-        const result = JWTAuth.decodeToken(req.body.token);
-        console.log(result);
-        res.sendStatus(200);
+        try {
+            const userID = JWTAuth.decodeToken(req.body.token);
+            res.status(200).send(JWTAuth.getToken(userID));
+        } catch (_) {
+            res.sendStatus(401);
+        }
     },
 );

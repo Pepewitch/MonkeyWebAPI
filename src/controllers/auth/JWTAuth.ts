@@ -9,7 +9,7 @@ interface IPayload {
 
 export class JWTAuth {
 
-    public static getToken(userID: number): { token: string, refreshToken: string, exp: Date } {
+    public static getAllToken(userID: number): { token: string, refreshToken: string, exp: Date } {
         return {
             exp: moment().add(7, "days").toDate(),
             refreshToken: this.encode({ userID }, "1m"),
@@ -24,6 +24,13 @@ export class JWTAuth {
         } catch (_) {
             return null;
         }
+    }
+
+    public static getToken(userID: number): { token: string, exp: Date } {
+        return {
+            exp: moment().add(7, "days").toDate(),
+            token: this.encode({ userID }),
+        };
     }
 
     private static encode(payload: string | object, expiresIn = "1w"): string {

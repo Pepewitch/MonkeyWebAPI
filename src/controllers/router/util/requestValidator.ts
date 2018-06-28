@@ -1,6 +1,14 @@
 import { compose } from "compose-middleware";
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { header, validationResult as validate } from "express-validator/check";
+import { JWTAuth } from "../../auth/JWTAuth";
+
+export const authenticateRequest = compose([
+    header("authorization").isString(),
+    validateRequest,
+    validateHeader,
+    authenticateUser,
+]);
 
 export function validateRequest(
     req: Request,
@@ -14,15 +22,7 @@ export function validateRequest(
     }
 }
 
-function validateHeader(): RequestHandler {
-    return compose([
-        header("authorization").isString(),
-        validateRequest,
-        authenticateRequest,
-    ]);
-}
-
-function authenticateRequest(
+function validateHeader(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -34,15 +34,20 @@ function authenticateRequest(
         }
         req.authToken = splitHeader[1];
         next();
-    } catch (error) {
+    } catch (_) {
         res.sendStatus(401);
     }
 }
 
-function getUserAuthorization(
+function authenticateUser(
     req: Request,
     res: Response,
     next: NextFunction,
 ): void {
-    console.log("object");
+    try {
+        req.user.id = JWTAuth.decodeToken(req.authToken);
+        next();
+    } catch (_) {
+        res.sendStatus(401);
+    }
 }
