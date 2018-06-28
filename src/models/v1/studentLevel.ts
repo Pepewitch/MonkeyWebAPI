@@ -8,7 +8,7 @@ export interface IStudentLevelModel {
     QuarterID: number;
     Subject: string;
     Level: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

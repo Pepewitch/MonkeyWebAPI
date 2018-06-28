@@ -1,28 +1,28 @@
 import Sequelize from "sequelize";
-import { quarterModel } from "./quarter";
+import { tutorLogIntervalModel } from "./tutorLogInterval";
 import { userModel } from "./users";
 
-export interface IStudentRemarkModel {
+export interface ITutorLogStatusModel {
     ID: number;
-    StudentID: number;
-    QuarterID: number;
-    Remark: string;
+    UserID: number;
+    TutorLogIntervalID: number;
+    TutorLogStatus: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export type StudentRemarkInstance = Sequelize.Instance<IStudentRemarkModel> & IStudentRemarkModel;
+export type TutorLogStatusInstance = Sequelize.Instance<ITutorLogStatusModel> & ITutorLogStatusModel;
 
 // tslint:disable:object-literal-sort-keys
-export function studentRemarkModel(sequalize: Sequelize.Sequelize) {
-    const attributes: SequelizeAttributes<IStudentRemarkModel> = {
+export function tutorLogStatusModel(sequalize: Sequelize.Sequelize) {
+    const attributes: SequelizeAttributes<ITutorLogStatusModel> = {
         ID: {
             type: Sequelize.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true,
         },
-        StudentID: {
+        UserID: {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
@@ -30,21 +30,21 @@ export function studentRemarkModel(sequalize: Sequelize.Sequelize) {
                 key: "ID",
             },
         },
-        QuarterID: {
+        TutorLogIntervalID: {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
-                model: quarterModel(sequalize),
+                model: tutorLogIntervalModel(sequalize),
                 key: "ID",
             },
         },
-        Remark: {
-            type: Sequelize.STRING(50),
+        TutorLogStatus: {
+            type: Sequelize.STRING(20),
             allowNull: false,
         },
     };
 
-    return sequalize.define<StudentRemarkInstance, IStudentRemarkModel>("StudentRemark", attributes, {
-        tableName: "StudentRemark",
+    return sequalize.define<TutorLogStatusInstance, ITutorLogStatusModel>("TutorInfo", attributes, {
+        tableName: "TutorInfo",
     });
 }

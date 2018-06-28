@@ -8,7 +8,7 @@ export interface IReceiptModel {
     StudentID: number;
     QuarterID: number;
     Visibility: Visibility;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

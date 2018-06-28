@@ -8,7 +8,7 @@ export enum QuarterType {
 export interface IQuarterModel {
     ID: number;
     QuarterName: string;
-    Type: QuarterType;
+    QuarterType: QuarterType;
     StartDate: Date;
     EndDate: Date;
     createdAt?: Date;
@@ -29,7 +29,7 @@ export function quarterModel(sequalize: Sequelize.Sequelize) {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        Type: {
+        QuarterType: {
             type: Sequelize.STRING(10),
             allowNull: false,
         },

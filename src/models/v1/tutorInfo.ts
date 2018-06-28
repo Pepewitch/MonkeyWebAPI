@@ -4,7 +4,7 @@ import { userModel } from "./users";
 export interface ITutorInfoModel {
     ID: number;
     Position: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

@@ -6,7 +6,7 @@ export interface IRoomModel {
     RoomName: string;
     QuarterID: number;
     MaxSeat: number;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
@@ -22,7 +22,7 @@ export function roomModel(sequalize: Sequelize.Sequelize) {
             autoIncrement: true,
         },
         RoomName: {
-            type: Sequelize.STRING(16),
+            type: Sequelize.STRING(20),
             allowNull: false,
         },
         QuarterID: {

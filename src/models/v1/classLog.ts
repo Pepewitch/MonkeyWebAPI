@@ -13,7 +13,7 @@ export interface IClassLogModel {
     HBSheetID: number;
     TutorID: number;
     Progress?: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

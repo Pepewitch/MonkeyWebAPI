@@ -28,7 +28,7 @@ export interface IUserModel {
     UserStatus: UserStatus;
     Position: UserPosition;
     UserPassword?: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
