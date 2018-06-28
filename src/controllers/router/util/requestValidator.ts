@@ -28,7 +28,7 @@ function validateHeader(
     next: NextFunction,
 ): void {
     try {
-        const splitHeader = req.headers.authorization.split(" ")[0];
+        const splitHeader = req.headers.authorization.split(" ");
         if (splitHeader[0] !== "Bearer") {
             throw new Error("Authorization schema not match");
         }
@@ -45,7 +45,9 @@ function authenticateUser(
     next: NextFunction,
 ): void {
     try {
-        req.user.id = JWTAuth.decodeToken(req.authToken);
+        req.user = {
+            id: JWTAuth.decodeToken(req.authToken),
+        };
         next();
     } catch (_) {
         res.sendStatus(401);
