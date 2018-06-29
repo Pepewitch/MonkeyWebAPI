@@ -2,7 +2,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import Sequelize from "sequelize";
 import { Connection } from "../models/Connection";
-import { IUserModel, UserInstance, userModel } from "../models/v1/users";
+import { IUserModel, UserInstance, userModel, UserPosition, UserStatus } from "../models/v1/users";
 import { Crypto } from "./util/crypto";
 
 export class User {
@@ -22,6 +22,17 @@ export class User {
         this.userModel = userModel(Connection.getInstance().getConnection());
     }
 
+    public createStudent(): Observable<string> {
+        const password = this.generatePassword();
+        return from(this.userModel.create({
+            Position: UserPosition.student,
+            UserPassword: Crypto.encrypt(password),
+            UserStatus: UserStatus.inactive,
+        })).pipe(
+            map(() => password),
+        );
+    }
+
     public getUserInfo(ID: number): Observable<IUserModel> {
         return from(this.userModel.findOne<IUserModel>({ where: { ID } }));
     }
@@ -35,4 +46,8 @@ export class User {
         );
     }
 
+    private generatePassword(): string {
+        const randomPassword = "" + Math.random();
+        return randomPassword.substr(2, 4);
+    }
 }
