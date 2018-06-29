@@ -1,19 +1,21 @@
 import Sequelize from "sequelize";
-import { commentTextModel } from "./commentText";
+import { tutorLogIntervalModel } from "./tutorLogInterval";
 import { userModel } from "./users";
 
-export interface ICommentConfigModel {
+export interface ITutorLogMultiplierModel {
     ID: number;
     UserID: number;
-    CommentTextID: number;
-    Order: number;
+    TutorLogIntervalID: number;
+    Multiplier: number;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
-export type CommentConfigInstance = Sequelize.Instance<ICommentConfigModel> & ICommentConfigModel;
+export type TutorLogMultiplierInstance = Sequelize.Instance<ITutorLogMultiplierModel> & ITutorLogMultiplierModel;
 
 // tslint:disable:object-literal-sort-keys
-export function commentConfigModel(sequalize: Sequelize.Sequelize) {
-    const attributes: SequelizeAttributes<ICommentConfigModel> = {
+export function tutorLogMultiplierModel(sequalize: Sequelize.Sequelize) {
+    const attributes: SequelizeAttributes<ITutorLogMultiplierModel> = {
         ID: {
             type: Sequelize.INTEGER,
             allowNull: false,
@@ -28,23 +30,21 @@ export function commentConfigModel(sequalize: Sequelize.Sequelize) {
                 key: "ID",
             },
         },
-        CommentTextID: {
+        TutorLogIntervalID: {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
-                model: commentTextModel(sequalize),
+                model: tutorLogIntervalModel(sequalize),
                 key: "ID",
             },
         },
-        Order: {
+        Multiplier: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            defaultValue: -1,
         },
     };
 
-    return sequalize.define<CommentConfigInstance, ICommentConfigModel>("CommentConfig", attributes, {
-        tableName: "CommentConfig",
-        timestamps: false,
+    return sequalize.define<TutorLogMultiplierInstance, ITutorLogMultiplierModel>("TutorLogMultiplier", attributes, {
+        tableName: "TutorLogMultiplier",
     });
 }

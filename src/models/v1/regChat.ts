@@ -10,7 +10,7 @@ export interface IRegChatModel {
     QuarterID: number;
     SenderID: number;
     Visibility: Visibility;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
@@ -60,7 +60,7 @@ export function regChatModel(sequalize: Sequelize.Sequelize) {
         },
     };
 
-    return sequalize.define<RegChatInstance, IRegChatModel>("RegistrationChat", attributes, {
-        tableName: "RegistrationChat",
+    return sequalize.define<RegChatInstance, IRegChatModel>("RegChat", attributes, {
+        tableName: "RegChat",
     });
 }

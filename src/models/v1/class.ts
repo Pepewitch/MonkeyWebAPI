@@ -22,7 +22,7 @@ export interface IClassModel {
     Suggestion: string;
     ClassTimes: number;
     ClassType: ClassType;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
@@ -38,7 +38,7 @@ export function classModel(sequalize: Sequelize.Sequelize) {
             autoIncrement: true,
         },
         ClassName: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(50),
             allowNull: false,
         },
         QuarterID: {

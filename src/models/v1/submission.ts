@@ -6,7 +6,7 @@ export interface ISubmissionModel {
     ClassID: number;
     SubmissionState: string;
     SubmissionTimes: number;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

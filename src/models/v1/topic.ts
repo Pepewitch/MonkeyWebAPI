@@ -6,7 +6,7 @@ export interface ITopicModel {
     Class: string;
     Topic: string;
     TopicName?: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

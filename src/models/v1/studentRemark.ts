@@ -7,7 +7,7 @@ export interface IStudentRemarkModel {
     StudentID: number;
     QuarterID: number;
     Remark: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

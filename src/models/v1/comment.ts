@@ -10,7 +10,7 @@ export interface ICommentModel {
     QuarterID: number;
     SenderID: number;
     Remark?: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

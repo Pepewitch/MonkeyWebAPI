@@ -19,7 +19,7 @@ export interface IStudentStateModel {
     QuarterID: number;
     StudentID: number;
     Stage: StudentStage;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
