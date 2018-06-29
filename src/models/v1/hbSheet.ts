@@ -9,7 +9,7 @@ export interface IHBSheetModel {
     SubLevel?: string;
     Rev: number;
     SheetPath?: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

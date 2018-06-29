@@ -7,8 +7,8 @@ export enum CommentType {
 
 export interface ICommentTextModel {
     ID: number;
-    Text: string;
-    Type: CommentType;
+    CommentText: string;
+    CommentType: CommentType;
 }
 
 export type CommentTextInstance = Sequelize.Instance<ICommentTextModel> & ICommentTextModel;
@@ -22,11 +22,11 @@ export function commentTextModel(sequalize: Sequelize.Sequelize) {
             primaryKey: true,
             autoIncrement: true,
         },
-        Text: {
+        CommentText: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        Type: {
+        CommentType: {
             type: Sequelize.STRING(50),
             allowNull: false,
         },

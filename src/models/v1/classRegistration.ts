@@ -14,7 +14,7 @@ export interface IClassRegModel {
     StudentID: number;
     ClassID: number;
     RegStatus: RegStatus;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
@@ -47,7 +47,7 @@ export function classRegModel(sequalize: Sequelize.Sequelize) {
         },
         RegStatus: {
             type: Sequelize.STRING(10),
-            allowNull: true,
+            allowNull: false,
             defaultValue: RegStatus.registered,
         },
     };

@@ -9,7 +9,7 @@ export interface ISubmissionChatModel {
     ChatMessage: string;
     SenderID: number;
     Visibility: Visibility;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 

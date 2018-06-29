@@ -16,7 +16,7 @@ export interface IAttendanceModel {
     Reason?: string;
     Remark?: string;
     Sender?: string;
-    createAt?: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
 
