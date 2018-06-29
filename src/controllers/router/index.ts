@@ -21,7 +21,7 @@ router.get(
 router.get(
     "/authPing",
     authenticateRequest,
-    (req, res) => {
+    (_, res) => {
         res.json({
             msg: "pong",
         });
