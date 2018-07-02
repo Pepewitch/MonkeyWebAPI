@@ -1,4 +1,5 @@
 import { createServer } from "http";
+import WebSocket from "ws";
 import app from "./app";
 import { SocketGenerator } from "./socket";
 import logger from "./util/logger";
@@ -13,8 +14,8 @@ server.listen(app.get("port"), () => {
 SocketGenerator.getInstance().setServer(server);
 
 // Test Web socket service
-const webSocketServer = SocketGenerator.getInstance().getSocket();
+const webSocketServer = SocketGenerator.getInstance().getVerifySocket();
 
-webSocketServer.on("connection", (socket) => {
+webSocketServer.on("connection", (socket: WebSocket) => {
     socket.send(JSON.stringify({ msg: "Hello" }));
 });

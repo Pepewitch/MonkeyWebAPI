@@ -1,4 +1,4 @@
-import { Server } from "http";
+import { IncomingMessage, Server } from "http";
 import WebSocket from "ws";
 
 export class SocketGenerator {
@@ -28,5 +28,26 @@ export class SocketGenerator {
             path,
             server: this.server,
         });
+    }
+
+    public getVerifySocket(): WebSocket.Server {
+        return new WebSocket.Server({
+            server: this.server,
+            verifyClient: this.verifyClient,
+        });
+    }
+
+    public getVerifySocketWithPath(path: string): WebSocket.Server {
+        return new WebSocket.Server({
+            path,
+            server: this.server,
+            verifyClient: this.verifyClient,
+        });
+    }
+
+    private verifyClient(
+        info: { origin: string; secure: boolean; req: IncomingMessage },
+    ): boolean {
+        return info.origin === process.env.ALLOW_ORIGIN;
     }
 }

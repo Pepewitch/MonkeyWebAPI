@@ -46,6 +46,15 @@ export class User {
         );
     }
 
+    public getPosition(ID: number): Observable<UserPosition> {
+        return from(this.userModel.findOne<UserPosition>({
+            attributes: ["Position"],
+            where: { ID },
+        })).pipe(
+            map((user) => user.Position),
+        );
+    }
+
     private generatePassword(): string {
         const randomPassword = "" + Math.random();
         return randomPassword.substr(2, 4);

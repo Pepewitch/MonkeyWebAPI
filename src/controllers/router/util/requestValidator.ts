@@ -1,6 +1,8 @@
-import { compose } from "compose-middleware";
-import { NextFunction, Request, Response } from "express";
+import { compose, Next } from "compose-middleware";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { header, validationResult as validate } from "express-validator/check";
+import { UserPosition } from "../../../models/v1/users";
+import { User } from "../../../repositories/Users";
 import { JWTAuth } from "../../auth/JWTAuth";
 
 export const authenticateRequest = compose([
@@ -9,6 +11,26 @@ export const authenticateRequest = compose([
     validateHeader,
     authenticateUser,
 ]);
+
+export function authenticateRequestWithPosition(...positions: UserPosition[]): RequestHandler {
+    return compose([
+        authenticateRequest,
+        (req: Request, res: Response, next: NextFunction) => {
+            User.getInstance().getPosition(req.user.id).subscribe(
+                (position) => {
+                    if (positions.indexOf(position) === -1) {
+                        res.sendStatus(401);
+                    } else {
+                        next();
+                    }
+                },
+                (_) => {
+                    res.sendStatus(500);
+                },
+            );
+        },
+    ]);
+}
 
 export function validateRequest(
     req: Request,
