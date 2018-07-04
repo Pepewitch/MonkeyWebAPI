@@ -6,7 +6,7 @@ export interface ICommentConfigModel {
     ID: number;
     UserID: number;
     CommentTextID: number;
-    Order: number;
+    ConfigOrder: number;
 }
 
 export type CommentConfigInstance = Sequelize.Instance<ICommentConfigModel> & ICommentConfigModel;
@@ -36,7 +36,7 @@ export function commentConfigModel(sequalize: Sequelize.Sequelize) {
                 key: "ID",
             },
         },
-        Order: {
+        ConfigOrder: {
             type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: -1,

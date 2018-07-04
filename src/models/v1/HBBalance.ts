@@ -3,7 +3,7 @@ import { classLogModel } from "./classLog";
 
 export interface IHBBalaceModel {
     ID: number;
-    Transction: number;
+    HBTransaction: number;
     ClassLogID?: number;
     createdAt?: Date;
     updatedAt?: Date;
@@ -18,8 +18,9 @@ export function hbBalaceModel(sequalize: Sequelize.Sequelize) {
             type: Sequelize.INTEGER,
             allowNull: false,
             primaryKey: true,
+            autoIncrement: true,
         },
-        Transction: {
+        HBTransaction: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
