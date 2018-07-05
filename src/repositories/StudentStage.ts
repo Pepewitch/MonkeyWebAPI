@@ -36,41 +36,62 @@ export class StudentStage {
         }
     }
 
+    public get(
+        StudentID: number,
+        QuarterID?: number,
+    ): Observable<IStudentStateModel> {
+        if (QuarterID) {
+            return this.getLatestStudentModelInQuarter(StudentID, QuarterID);
+        } else {
+            return this.getLatestStudentModelInDefaultQuarter<IStudentStateModel>("*", StudentID);
+        }
+    }
+
     public grade(
         StudentID: number,
         QuarterID?: number,
     ): Observable<number> {
         if (QuarterID) {
-            return from(this.studentStateModel.findOne<IStudentStateModel>({
-                order: [
-                    ["createdAt", "DESC"],
-                ],
-                where: { StudentID, QuarterID },
-            })).pipe(
-                map((student) => {
-                    if (!student) {
-                        throw new Error(`Grade of studentID: '${StudentID}' in quarterID: '${QuarterID}' not found`);
-                    }
-                    return student.Grade;
-                }),
+            return this.getLatestStudentModelInQuarter(StudentID, QuarterID).pipe(
+                map((student) => student.Grade),
             );
         } else {
-            return Connection.getInstance().select<number>(
-                `SELECT Grade
-                FROM StudentState
-                    JOIN Quarter ON QuarterID = Quarter.ID
-                WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`, {
-                    replacements: { StudentID },
-                },
-            ).pipe(
-                map((result) => {
-                    if (result.length === 0) {
-                        // tslint:disable-next-line:max-line-length
-                        throw new Error(`Grade of studentID: '${StudentID}' in default quarter not found, specify quarterID to get more specific information`);
-                    }
-                    return result[0];
-                }),
-            );
+            return this.getLatestStudentModelInDefaultQuarter<number>("Grade", StudentID);
         }
+    }
+
+    private getLatestStudentModelInQuarter(StudentID: number, QuarterID: number): Observable<IStudentStateModel> {
+        return from(this.studentStateModel.findOne<IStudentStateModel>({
+            order: [
+                ["createdAt", "DESC"],
+            ],
+            where: { StudentID, QuarterID },
+        })).pipe(
+            map((student) => {
+                if (!student) {
+                    throw new Error(`StudentState of studentID: '${StudentID}' in quarterID: '${QuarterID}' not found`);
+                }
+                return student;
+            }),
+        );
+    }
+
+    private getLatestStudentModelInDefaultQuarter<T>(selectStatement: string, StudentID: number): Observable<T> {
+        return Connection.getInstance().select<T>(
+            `SELECT TOP(1) ${selectStatement}
+            FROM StudentState
+                JOIN Quarter ON QuarterID = Quarter.ID
+            WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`, {
+                replacements: { StudentID },
+            },
+        ).pipe(
+            map((result) => {
+                if (result.length === 0) {
+                    // tslint:disable-next-line:max-line-length
+                    throw new Error(`StudentState of studentID: '${StudentID}' in default quarter not found, specify quarterID to get more specific information`);
+                }
+                return result[0];
+            }),
+        );
     }
 }
