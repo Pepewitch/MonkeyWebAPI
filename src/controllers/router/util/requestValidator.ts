@@ -1,6 +1,10 @@
 import { compose } from "compose-middleware";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { header, validationResult as validate } from "express-validator/check";
+import { Subscriber } from "rxjs";
+import { SubjectSubscriber } from "rxjs/internal/Subject";
+import { UserPosition } from "../../../models/v1/users";
+import { User } from "../../../repositories/Users";
 import { JWTAuth } from "../../auth/JWTAuth";
 
 export const authenticateRequest = compose([
@@ -9,6 +13,26 @@ export const authenticateRequest = compose([
     validateHeader,
     authenticateUser,
 ]);
+
+export function authenticateRequestWithPosition(...positions: UserPosition[]): RequestHandler {
+    return compose([
+        authenticateRequest,
+        (req: Request, res: Response, next: NextFunction) => {
+            User.getInstance().getPosition(req.user.id).subscribe(
+                (position) => {
+                    if (positions.indexOf(position) === -1) {
+                        res.sendStatus(401);
+                    } else {
+                        next();
+                    }
+                },
+                (_) => {
+                    res.sendStatus(500);
+                },
+            );
+        },
+    ]);
+}
 
 export function validateRequest(
     req: Request,
@@ -37,6 +61,37 @@ function validateHeader(
     } catch (_) {
         res.sendStatus(401);
     }
+}
+
+export function validateFile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): void {
+    if (req.file || req.files) {
+        next();
+    } else {
+        res.status(400).send({
+            error: "No file or files upload",
+        });
+    }
+}
+
+export function completionHandler(
+    res: Response,
+): Subscriber<any> {
+    return SubjectSubscriber.create(
+        // tslint:disable-next-line:no-empty
+        () => { },
+        (error) => res.status(500).send({ error: error.toString() }),
+        () => res.sendStatus(200),
+    );
+}
+
+export function errorHandler(
+    res: Response,
+): (error: any) => void {
+    return (error) => res.status(500).send({ error: error.toString() });
 }
 
 function authenticateUser(

@@ -16,7 +16,7 @@ export enum UserPosition {
 }
 
 export interface IUserModel {
-    ID?: number;
+    ID: number;
     Firstname?: string;
     Lastname?: string;
     Nickname?: string;

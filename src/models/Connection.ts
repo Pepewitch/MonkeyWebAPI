@@ -1,5 +1,6 @@
 import { from, Observable } from "rxjs";
 import Sequelize from "sequelize";
+import { prod } from "../util/secrets";
 
 declare global {
     type SequelizeAttributes<T extends { [key: string]: any }> = {
@@ -29,7 +30,7 @@ export class Connection {
                     encrypt: true,
                 },
                 host: process.env.DB_SERVER,
-                logging: false,
+                logging: !prod,
             });
     }
 
@@ -39,6 +40,10 @@ export class Connection {
 
     public query<T>(sql: string | { query: string, values: any[] }, options?: Sequelize.QueryOptions): Observable<T[]> {
         return from(this.sequelize.query<T>(sql, options));
+    }
+
+    public select<T>(sql: string | { query: string, values: any[] }, options?: Sequelize.QueryOptions): Observable<T[]> {
+        return from(this.sequelize.query<T>(sql, { ...options, raw: true, type: Sequelize.QueryTypes.SELECT }));
     }
 
     public authenticate() {
