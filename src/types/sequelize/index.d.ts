@@ -3958,6 +3958,7 @@ declare namespace sequelize {
          * Find the maximum value of field
          */
         max(field: string, options?: AggregateOptions): Promise<any>;
+        max<T>(field: string, options?: AggregateOptions): Promise<T>;
 
         /**
          * Find the minimum value of field

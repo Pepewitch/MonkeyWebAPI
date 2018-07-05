@@ -1,6 +1,8 @@
 import Sequelize from "sequelize";
 import { classModel } from "./class";
 
+// TODO: Add enum for SubmissionStatus
+
 export interface ISubmissionModel {
     ID: number;
     ClassID: number;
