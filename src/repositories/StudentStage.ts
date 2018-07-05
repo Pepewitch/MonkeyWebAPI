@@ -1,10 +1,10 @@
 import { from, Observable } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
-import Sequelize from "sequelize";
 import { Connection } from "../models/Connection";
 import { IStudentStateModel, StudentStageList, StudentStateInstance, studentStateModel } from "../models/v1/studentState";
+import { SequelizeModel } from "./SequelizeModel";
 
-export class StudentStage {
+export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentStateModel> {
 
     public static getInstance(): StudentStage {
         if (!this.instance) {
@@ -15,10 +15,9 @@ export class StudentStage {
 
     private static instance: StudentStage;
 
-    private studentStateModel: Sequelize.Model<StudentStateInstance, IStudentStateModel>;
-
     private constructor() {
-        this.studentStateModel = studentStateModel(Connection.getInstance().getConnection());
+        super();
+        this.model = studentStateModel(Connection.getInstance().getConnection());
     }
 
     public add(
@@ -28,10 +27,10 @@ export class StudentStage {
         Grade?: number,
     ): Observable<IStudentStateModel> {
         if (Grade) {
-            return from(this.studentStateModel.create({ Grade, QuarterID, StudentID, Stage }));
+            return from(this.model.create({ Grade, QuarterID, StudentID, Stage }));
         } else {
             return this.grade(StudentID, QuarterID).pipe(
-                flatMap((grade) => from(this.studentStateModel.create({ Grade: grade, QuarterID, StudentID, Stage }))),
+                flatMap((grade) => from(this.model.create({ Grade: grade, QuarterID, StudentID, Stage }))),
             );
         }
     }
@@ -61,7 +60,7 @@ export class StudentStage {
     }
 
     private getLatestStudentModelInQuarter(StudentID: number, QuarterID: number): Observable<IStudentStateModel> {
-        return from(this.studentStateModel.findOne<IStudentStateModel>({
+        return from(this.model.findOne<IStudentStateModel>({
             order: [
                 ["createdAt", "DESC"],
             ],

@@ -1,10 +1,10 @@
-import { from, Observable, throwError } from "rxjs";
+import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import Sequelize from "sequelize";
 import { Connection } from "../models/Connection";
 import { IQuarterModel, QuarterInstance, quarterModel, QuarterType } from "../models/v1/quarter";
+import { SequelizeModel } from "./SequelizeModel";
 
-export class Quarter {
+export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
 
     public static getInstance(): Quarter {
         if (!this.instance) {
@@ -15,10 +15,9 @@ export class Quarter {
 
     private static instance: Quarter;
 
-    private quarterModel: Sequelize.Model<QuarterInstance, IQuarterModel>;
-
     private constructor() {
-        this.quarterModel = quarterModel(Connection.getInstance().getConnection());
+        super();
+        this.model = quarterModel(Connection.getInstance().getConnection());
     }
 
     public add(
@@ -29,7 +28,7 @@ export class Quarter {
         StartDate: Date,
         EndDate: Date,
     ): Observable<IQuarterModel> {
-        return from(this.quarterModel.create({ ID, QuarterName, QuarterType, StartDate, EndDate }));
+        return from(this.model.create({ ID, QuarterName, QuarterType, StartDate, EndDate }));
     }
 
     public defaultQuarter(
@@ -51,13 +50,13 @@ export class Quarter {
     }
 
     public list(): Observable<IQuarterModel[]> {
-        return from(this.quarterModel.findAll({ raw: true }));
+        return from(this.model.findAll({ raw: true }));
     }
 
     public delete(
         ID: number,
     ): Observable<number> {
-        return from(this.quarterModel.destroy({ where: { ID } }));
+        return from(this.model.destroy({ where: { ID } }));
     }
 
     public edit(
@@ -74,7 +73,7 @@ export class Quarter {
         if (value.QuarterName) {
             updateValue = { ...updateValue, QuarterName: value.QuarterName };
         }
-        return from(this.quarterModel.update(updateValue, { where: { ID } }))
+        return from(this.model.update(updateValue, { where: { ID } }))
             .pipe(
                 map((quarter) => quarter[0]),
         );

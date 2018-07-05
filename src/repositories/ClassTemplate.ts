@@ -1,20 +1,18 @@
-import Sequelize from "sequelize";
-import { Connection } from "../models/Connection";
+// import { Connection } from "../models/Connection";
+// import { SequelizeModel } from "./SequelizeRepo";
 
-export class ClassTemplate {
+// export class ClassTemplate extends SequelizeModel<TemplateInstance, ITemplateModel> {
 
-    public static getInstance(): ClassTemplate {
-        if (!this.instance) {
-            this.instance = new ClassTemplate();
-        }
-        return this.instance;
-    }
+//     public static getInstance(): ClassTemplate {
+//         if (!this.instance) {
+//             this.instance = new ClassTemplate();
+//         }
+//         return this.instance;
+//     }
 
-    private static instance: ClassTemplate;
+//     private static instance: ClassTemplate;
 
-    // private templateModel: Sequelize.Model<TemplateInstance, ITemplateModel>;
-
-    private constructor() {
-        // this.templateModel = templateModel(Connection.getInstance().getConnection());
-    }
-}
+//     private constructor() {
+//         this.model = templateModel(Connection.getInstance().getConnection());
+//     }
+// }

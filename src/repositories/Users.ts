@@ -1,11 +1,11 @@
 import { from, Observable } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
-import Sequelize from "sequelize";
 import { Connection } from "../models/Connection";
 import { IUserModel, UserInstance, userModel, UserPosition, UserStatus } from "../models/v1/users";
+import { SequelizeModel } from "./SequelizeModel";
 import { Crypto } from "./util/crypto";
 
-export class User {
+export class User extends SequelizeModel<UserInstance, IUserModel> {
 
     public static getInstance(): User {
         if (!this.instance) {
@@ -16,10 +16,9 @@ export class User {
 
     private static instance: User;
 
-    private userModel: Sequelize.Model<UserInstance, IUserModel>;
-
     private constructor() {
-        this.userModel = userModel(Connection.getInstance().getConnection());
+        super();
+        this.model = userModel(Connection.getInstance().getConnection());
     }
 
     public generateStudent(): Observable<string> {
@@ -31,7 +30,7 @@ export class User {
     }
     public createStudent(ID: number): Observable<string> {
         const password = this.generatePassword();
-        return from(this.userModel.create({
+        return from(this.model.create({
             ID,
             Position: UserPosition.student,
             UserPassword: Crypto.encrypt(password),
@@ -42,11 +41,11 @@ export class User {
     }
 
     public getUserInfo(ID: number): Observable<IUserModel> {
-        return from(this.userModel.findOne<IUserModel>({ where: { ID } }));
+        return from(this.model.findOne<IUserModel>({ where: { ID } }));
     }
 
     public login(ID: number, password: string): Observable<boolean> {
-        return from(this.userModel.findOne<string>({
+        return from(this.model.findOne<string>({
             attributes: ["UserPassword"],
             where: { ID },
         })).pipe(
@@ -55,7 +54,7 @@ export class User {
     }
 
     public getPosition(ID: number): Observable<UserPosition> {
-        return from(this.userModel.findOne<UserPosition>({
+        return from(this.model.findOne<UserPosition>({
             attributes: ["Position"],
             where: { ID },
         })).pipe(
@@ -101,7 +100,7 @@ export class User {
         if (value.Position) {
             updateValue = { ...updateValue, Position: value.Position };
         }
-        return from(this.userModel.update(updateValue, { where: { ID } })).pipe(
+        return from(this.model.update(updateValue, { where: { ID } })).pipe(
             map((result) => result[0]),
         );
     }
