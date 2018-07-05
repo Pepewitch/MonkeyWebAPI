@@ -23,13 +23,12 @@ export class User {
     }
 
     public generateStudent(): Observable<string> {
-        return from(Connection.getInstance().query<number>(
+        return from(Connection.getInstance().select<number>(
             `SELECT TOP(1) ID FROM Users WHERE Position = 'student' ORDER BY ID DESC;`,
         )).pipe(
             flatMap((lastStudentID) => this.createStudent(lastStudentID[0])),
         );
     }
-
     public createStudent(ID: number): Observable<string> {
         const password = this.generatePassword();
         return from(this.userModel.create({

@@ -3,7 +3,7 @@ import { body, oneOf } from "express-validator/check";
 import { Observable } from "rxjs";
 import { UserPosition } from "../../../models/v1/users";
 import { User } from "../../../repositories/Users";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -15,7 +15,7 @@ router.post(
     (req, res) => {
         User.getInstance().getPosition(req.body.userID).subscribe(
             (position) => res.status(200).send({ position }),
-            (error) => res.status(500).send({ error }),
+            errorHandler(res),
         );
     },
 );
@@ -33,7 +33,7 @@ router.post(
         }
         observable.subscribe(
             (password) => res.status(200).send({ password }),
-            (error) => res.status(500).send({ error }),
+            errorHandler(res),
         );
     },
 );

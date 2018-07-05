@@ -13,7 +13,7 @@ if (!process.env.NODE_ENV) {
 }
 
 export const ENVIRONMENT = process.env.NODE_ENV || "dev";
-const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
+export const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
 
 export const SESSION_SECRET = process.env.SESSION_SECRET;
 export const JWT_SECRET = process.env.JWT_SECRET;

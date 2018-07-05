@@ -88,6 +88,12 @@ export function completionHandler(
     );
 }
 
+export function errorHandler(
+    res: Response,
+): (error: any) => void {
+    return (error) => res.status(500).send({ error: error.toString() });
+}
+
 function authenticateUser(
     req: Request,
     res: Response,

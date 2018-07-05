@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { IQuarterModel, QuarterType } from "../../../models/v1/quarter";
 import { UserPosition } from "../../../models/v1/users";
 import { Quarter } from "../../../repositories/Quarter";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -35,14 +35,14 @@ router.post(
     validateRequest,
     (req, res) => {
         let observable: Observable<IQuarterModel | null>;
-        if (req.body.summer === true) {
+        if (req.body.summer === "true") {
             observable = Quarter.getInstance().defaultQuarter(QuarterType.summer);
         } else {
             observable = Quarter.getInstance().defaultQuarter();
         }
         observable.subscribe(
             (quarter) => res.status(200).send({ quarter }),
-            (error) => res.status(500).send({ error }),
+            errorHandler(res),
         );
     },
 );
@@ -53,7 +53,7 @@ router.post(
     (_, res) => {
         Quarter.getInstance().list().subscribe(
             (quarters) => res.status(200).send({ quarters }),
-            (error) => res.status(500).send({ error }),
+            errorHandler(res),
         );
     },
 );

@@ -1,4 +1,4 @@
-import { from, Observable } from "rxjs";
+import { from, Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
 import Sequelize from "sequelize";
 import { Connection } from "../models/Connection";
@@ -34,12 +34,19 @@ export class Quarter {
 
     public defaultQuarter(
         type = QuarterType.normal,
-    ): Observable<IQuarterModel | null> {
-        return Connection.getInstance().query<IQuarterModel>(
-            `SELECT * FROM Quarter WHERE StartDate < GETDATE() AND EndDate > GETDATE() AND Type = '${type}'`,
-            { raw: true },
+    ): Observable<IQuarterModel> {
+        return Connection.getInstance().select<IQuarterModel>(
+            `SELECT * FROM Quarter WHERE StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = :type`,
+            {
+                replacements: { type },
+            },
         ).pipe(
-            map((result) => result.length === 0 ? null : result[0]),
+            map((result) => {
+                if (result.length === 0) {
+                    throw new Error("Default quarter not found");
+                }
+                return result[0];
+            }),
         );
     }
 
