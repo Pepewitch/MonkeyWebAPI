@@ -2,15 +2,14 @@ import { Router } from "express";
 import { body, oneOf } from "express-validator/check";
 import { Observable } from "rxjs";
 import { IQuarterModel, QuarterType } from "../../../models/v1/quarter";
-import { UserPosition } from "../../../models/v1/users";
 import { Quarter } from "../../../repositories/Quarter";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authenticateRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.post(
     "/add",
-    authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
+    authenticateRequestWithAdminPosition,
     body("quarterID").isInt(),
     body("quarterName").isString(),
     body("quarterType").isIn(Object.keys(QuarterType)),
@@ -60,7 +59,7 @@ router.post(
 
 router.post(
     "/delete",
-    authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
+    authenticateRequestWithAdminPosition,
     body("quarterID").isInt(),
     validateRequest,
     (req, res) => {
@@ -70,7 +69,7 @@ router.post(
 
 router.post(
     "/edit",
-    authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
+    authenticateRequestWithAdminPosition,
     body("quarterID").isInt(),
     oneOf([
         body("quarterName").isString(),

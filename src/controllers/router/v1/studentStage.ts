@@ -3,7 +3,7 @@ import { body } from "express-validator/check";
 import { StudentStageList } from "../../../models/v1/studentState";
 import { UserPosition } from "../../../models/v1/users";
 import { StudentStage } from "../../../repositories/StudentStage";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authenticateRequestWithoutPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -23,7 +23,7 @@ router.post(
 
 router.post(
     "/add",
-    authenticateRequestWithPosition(UserPosition.student, UserPosition.admin, UserPosition.dev, UserPosition.mel),
+    authenticateRequestWithoutPosition(UserPosition.tutor),
     body("quarterID").isInt(),
     body("stage").isIn(Object.keys(StudentStageList)),
     body("studentID").isInt(),

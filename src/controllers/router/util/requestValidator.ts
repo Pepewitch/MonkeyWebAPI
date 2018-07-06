@@ -1,6 +1,7 @@
 import { compose } from "compose-middleware";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { header, validationResult as validate } from "express-validator/check";
+import _ from "lodash";
 import { Subscriber } from "rxjs";
 import { SubjectSubscriber } from "rxjs/internal/Subject";
 import { UserPosition } from "../../../models/v1/users";
@@ -14,7 +15,21 @@ export const authenticateRequest = compose([
     authenticateUser,
 ]);
 
+export const authenticateRequestWithAdminPosition = authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel);
+
+export const authenticateRequestWithTutorPosition =
+    authenticateRequestWithPosition(UserPosition.tutor, UserPosition.admin, UserPosition.dev, UserPosition.mel);
+
+export function authenticateRequestWithoutPosition(...positions: UserPosition[]): RequestHandler {
+    const validPosition = _.pullAll(Object.keys(UserPosition), positions);
+    return authenticatePosition(validPosition as UserPosition[]);
+}
+
 export function authenticateRequestWithPosition(...positions: UserPosition[]): RequestHandler {
+    return authenticatePosition(positions);
+}
+
+function authenticatePosition(positions: UserPosition[]): RequestHandler {
     return compose([
         authenticateRequest,
         (req: Request, res: Response, next: NextFunction) => {
@@ -26,6 +41,7 @@ export function authenticateRequestWithPosition(...positions: UserPosition[]): R
                         next();
                     }
                 },
+                // tslint:disable-next-line:no-shadowed-variable
                 (_) => {
                     res.sendStatus(500);
                 },
