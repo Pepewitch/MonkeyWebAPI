@@ -3,7 +3,8 @@ import { userModel } from "./users";
 
 export interface IStudentInfoModel {
     ID: number;
-    Phone: string;
+    Phone?: string;
+    School?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -24,7 +25,11 @@ export function studentInfoModel(sequalize: Sequelize.Sequelize) {
         },
         Phone: {
             type: Sequelize.STRING(10),
-            allowNull: false,
+            allowNull: true,
+        },
+        School: {
+            type: Sequelize.STRING(50),
+            allowNull: true,
         },
     };
     return sequalize.define<StudentInfoInstance, IStudentInfoModel>("StudentInfo", attributes, {

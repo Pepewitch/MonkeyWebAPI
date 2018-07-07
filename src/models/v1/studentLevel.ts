@@ -6,8 +6,8 @@ export interface IStudentLevelModel {
     ID: number;
     StudentID: number;
     QuarterID: number;
-    Subject: string;
-    Level: string;
+    ClassSubject: string;
+    SubLevel: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -39,11 +39,11 @@ export function studentLevelModel(sequalize: Sequelize.Sequelize) {
                 key: "ID",
             },
         },
-        Subject: {
+        ClassSubject: {
             type: Sequelize.STRING(10),
             allowNull: false,
         },
-        Level: {
+        SubLevel: {
             type: Sequelize.STRING(10),
             allowNull: false,
         },
