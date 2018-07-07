@@ -87,17 +87,28 @@ export class StudentRemark extends SequelizeModel<StudentRemarkInstance, IStuden
     ): Observable<string> {
         if (QuarterID) {
             return from(this.model.findOne<IStudentStateModel>({ where: { QuarterID, StudentID } })).pipe(
-                map((result) => result.Remark),
+                map((result) => {
+                    if (!result) {
+                        throw new Error(`StudentRemark of studentID: '${StudentID}' in quarterID: '${QuarterID}' not found`);
+                    }
+                    return result.Remark;
+                }),
             );
         } else {
-            return Connection.getInstance().select<string>(
+            return Connection.getInstance().select<IStudentRemarkModel>(
                 `SELECT TOP(1) Remark
-                FROM StudentState
+                FROM StudentRemark
                     JOIN Quarter ON QuarterID = Quarter.ID
                 WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`,
                 { replacements: { StudentID } },
             ).pipe(
-                map((result) => result[0]),
+                map((result) => {
+                    if (result.length === 0) {
+                        // tslint:disable-next-line:max-line-length
+                        throw new Error(`StudentRemark of studentID: '${StudentID}' in default quarter not found, consider query options 'quarterID' to get more specific information`);
+                    }
+                    return result[0].Remark;
+                }),
             );
         }
     }
