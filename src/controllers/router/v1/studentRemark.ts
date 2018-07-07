@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator/check";
+import { UserPosition } from "../../../models/v1/users";
 import { StudentRemark } from "../../../repositories/StudentRemark";
-import { authenticateRequest, authenticateRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authenticateRequestWithAdminPosition, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.get(
     "/",
-    authenticateRequest,
+    authenticateRequestWithPosition(UserPosition.student),
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {

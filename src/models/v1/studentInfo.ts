@@ -2,7 +2,7 @@ import Sequelize from "sequelize";
 import { userModel } from "./users";
 
 export interface IStudentInfoModel {
-    ID: number;
+    ID?: number;
     Phone?: string;
     School?: string;
     createdAt?: Date;

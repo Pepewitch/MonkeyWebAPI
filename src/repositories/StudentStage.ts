@@ -42,7 +42,7 @@ export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentS
         if (QuarterID) {
             return this.getLatestStudentModelInQuarter(StudentID, QuarterID);
         } else {
-            return this.getLatestStudentModelInDefaultQuarter<IStudentStateModel>("*", StudentID);
+            return this.getLatestStudentModelInDefaultQuarter("*", StudentID);
         }
     }
 
@@ -55,7 +55,9 @@ export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentS
                 map((student) => student.Grade),
             );
         } else {
-            return this.getLatestStudentModelInDefaultQuarter<number>("Grade", StudentID);
+            return this.getLatestStudentModelInDefaultQuarter("Grade", StudentID).pipe(
+                map((student) => student.Grade),
+            );
         }
     }
 
@@ -75,8 +77,8 @@ export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentS
         );
     }
 
-    private getLatestStudentModelInDefaultQuarter<T>(selectStatement: string, StudentID: number): Observable<T> {
-        return Connection.getInstance().select<T>(
+    private getLatestStudentModelInDefaultQuarter(selectStatement: string, StudentID: number): Observable<IStudentStateModel> {
+        return Connection.getInstance().select<IStudentStateModel>(
             `SELECT TOP(1) ${selectStatement}
             FROM StudentState
                 JOIN Quarter ON QuarterID = Quarter.ID
@@ -87,7 +89,7 @@ export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentS
             map((result) => {
                 if (result.length === 0) {
                     // tslint:disable-next-line:max-line-length
-                    throw new Error(`StudentState of studentID: '${StudentID}' in default quarter not found, specify quarterID to get more specific information`);
+                    throw new Error(`StudentState of studentID: '${StudentID}' in default quarter not found, consider query options 'quarterID' to get more specific information`);
                 }
                 return result[0];
             }),
