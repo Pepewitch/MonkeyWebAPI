@@ -28,6 +28,7 @@ export class User extends SequelizeModel<UserInstance, IUserModel> {
             flatMap((lastStudentID) => this.createStudent(lastStudentID[0])),
         );
     }
+
     public createStudent(ID: number): Observable<string> {
         const password = this.generatePassword();
         return from(this.model.create({
