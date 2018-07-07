@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, oneOf } from "express-validator/check";
+import { body, oneOf, param, query } from "express-validator/check";
 import { Observable } from "rxjs";
 import { IQuarterModel, QuarterType } from "../../../models/v1/quarter";
 import { Quarter } from "../../../repositories/Quarter";
@@ -7,8 +7,38 @@ import { authenticateRequest, authenticateRequestWithAdminPosition, completionHa
 
 export const router = Router();
 
+router.get(
+    "/",
+    authenticateRequest,
+    (_, res) => {
+        Quarter.getInstance().list().subscribe(
+            (quarters) => res.status(200).send({ quarters }),
+            errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/default",
+    authenticateRequest,
+    query("summer").isBoolean().optional(),
+    validateRequest,
+    (req, res) => {
+        let observable: Observable<IQuarterModel | null>;
+        if (req.query.summer === "true") {
+            observable = Quarter.getInstance().defaultQuarter(QuarterType.summer);
+        } else {
+            observable = Quarter.getInstance().defaultQuarter();
+        }
+        observable.subscribe(
+            (quarter) => res.status(200).send({ quarter }),
+            errorHandler(res),
+        );
+    },
+);
+
 router.post(
-    "/add",
+    "/",
     authenticateRequestWithAdminPosition,
     body("quarterID").isInt(),
     body("quarterName").isString(),
@@ -27,50 +57,20 @@ router.post(
     },
 );
 
-router.post(
-    "/default",
-    authenticateRequest,
-    body("summer").isBoolean().optional(),
+router.delete(
+    "/:quarterID",
+    authenticateRequestWithAdminPosition,
+    param("quarterID").isInt(),
     validateRequest,
     (req, res) => {
-        let observable: Observable<IQuarterModel | null>;
-        if (req.body.summer === "true") {
-            observable = Quarter.getInstance().defaultQuarter(QuarterType.summer);
-        } else {
-            observable = Quarter.getInstance().defaultQuarter();
-        }
-        observable.subscribe(
-            (quarter) => res.status(200).send({ quarter }),
-            errorHandler(res),
-        );
+        Quarter.getInstance().delete(req.params.quarterID).subscribe(completionHandler(res));
     },
 );
 
-router.post(
-    "/list",
-    authenticateRequest,
-    (_, res) => {
-        Quarter.getInstance().list().subscribe(
-            (quarters) => res.status(200).send({ quarters }),
-            errorHandler(res),
-        );
-    },
-);
-
-router.post(
-    "/delete",
+router.patch(
+    "/:quarterID",
     authenticateRequestWithAdminPosition,
-    body("quarterID").isInt(),
-    validateRequest,
-    (req, res) => {
-        Quarter.getInstance().delete(req.body.quarterID).subscribe(completionHandler(res));
-    },
-);
-
-router.post(
-    "/edit",
-    authenticateRequestWithAdminPosition,
-    body("quarterID").isInt(),
+    param("quarterID").isInt(),
     oneOf([
         body("quarterName").isString(),
         body("startDate").isISO8601(),
@@ -79,7 +79,7 @@ router.post(
     validateRequest,
     (req, res) => {
         Quarter.getInstance().edit(
-            req.body.quarterID,
+            req.params.quarterID,
             {
                 EndDate: req.body.endDate,
                 QuarterName: req.body.quarterName,
