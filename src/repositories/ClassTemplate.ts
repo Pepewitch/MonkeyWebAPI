@@ -1,5 +1,5 @@
 // import { Connection } from "../models/Connection";
-// import { SequelizeModel } from "./SequelizeRepo";
+// import { SequelizeModel } from "./SequelizeModel";
 
 // export class ClassTemplate extends SequelizeModel<TemplateInstance, ITemplateModel> {
 
@@ -13,6 +13,7 @@
 //     private static instance: ClassTemplate;
 
 //     private constructor() {
+//         super();
 //         this.model = templateModel(Connection.getInstance().getConnection());
 //     }
 // }

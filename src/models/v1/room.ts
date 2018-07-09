@@ -2,7 +2,7 @@ import Sequelize from "sequelize";
 import { quarterModel } from "./quarter";
 
 export interface IRoomModel {
-    ID: number;
+    ID?: number;
     RoomName: string;
     QuarterID: number;
     MaxSeat: number;

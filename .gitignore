@@ -16,3 +16,6 @@ log/
 
 # Test log
 coverage/
+
+# Key storage
+key/

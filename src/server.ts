@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import app from "./app";
 import { Sockets } from "./controllers/socket";
+import { FileManager } from "./repositories/FileManager";
 import { SocketGenerator } from "./socket";
 import logger from "./util/logger";
 
@@ -13,3 +14,5 @@ server.listen(app.get("port"), () => {
 
 SocketGenerator.getInstance().setServer(server);
 Sockets.getInstance().init();
+
+FileManager.getInstance();
