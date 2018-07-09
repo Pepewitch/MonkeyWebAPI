@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, oneOf } from "express-validator/check";
+import { body, oneOf, param } from "express-validator/check";
 import { Observable } from "rxjs";
 import { UserPosition } from "../../../models/v1/users";
 import { User } from "../../../repositories/Users";
@@ -7,13 +7,47 @@ import { authenticateRequest, authenticateRequestWithPosition, completionHandler
 
 export const router = Router();
 
-router.post(
+router.get(
+    "/",
+    authenticateRequest,
+    (req, res) => {
+        User.getInstance().getUserInfo(req.user.id).subscribe(
+            (info) => res.status(200).send({ info }),
+            errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/:userID",
+    authenticateRequest,
+    param("userID"),
+    (req, res) => {
+        User.getInstance().getUserInfo(req.params.userID).subscribe(
+            (info) => res.status(200).send({ info }),
+            errorHandler,
+        );
+    },
+);
+
+router.get(
     "/position",
     authenticateRequest,
-    body("userID").isInt(),
+    (req, res) => {
+        User.getInstance().getPosition(req.user.id).subscribe(
+            (position) => res.status(200).send({ position }),
+            errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/position/:userID",
+    authenticateRequest,
+    param("userID").isInt(),
     validateRequest,
     (req, res) => {
-        User.getInstance().getPosition(req.body.userID).subscribe(
+        User.getInstance().getPosition(req.params.userID).subscribe(
             (position) => res.status(200).send({ position }),
             errorHandler(res),
         );

@@ -9,9 +9,10 @@ export const router = Router();
 
 router.get(
     "/",
+    query("type").isIn(Object.keys(QuarterType)).optional(),
     authenticateRequest,
-    (_, res) => {
-        Quarter.getInstance().list().subscribe(
+    (req, res) => {
+        Quarter.getInstance().list(req.query.type).subscribe(
             (quarters) => res.status(200).send({ quarters }),
             errorHandler(res),
         );
