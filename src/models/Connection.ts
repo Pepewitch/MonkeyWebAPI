@@ -25,7 +25,7 @@ export class Connection {
             process.env.DB_NAME,
             process.env.DB_USERNAME,
             process.env.DB_PASSWORD, {
-                dialect: "mssql",
+                dialect: "mysql",
                 dialectOptions: {
                     encrypt: true,
                 },
