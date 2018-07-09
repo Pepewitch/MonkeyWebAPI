@@ -4,7 +4,6 @@ import { Observable } from "rxjs";
 import { UserPosition } from "../../../models/v1/users";
 import { User } from "../../../repositories/Users";
 import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
-
 export const router = Router();
 
 router.get(
