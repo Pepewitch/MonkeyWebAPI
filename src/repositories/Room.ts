@@ -37,7 +37,7 @@ export class Room extends SequelizeModel<RoomInstance, IRoomModel> {
                 `SELECT *
                 FROM Room
                     JOIN Quarter ON Room.QuarterID = Quarter.ID
-                WHERE Quarter.StartDate < GETDATE() AND Quarter.EndDate > GETDATE();`,
+                WHERE Quarter.StartDate < NOW() AND Quarter.EndDate > NOW();`,
             );
         }
     }

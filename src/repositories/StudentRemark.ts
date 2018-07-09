@@ -52,10 +52,10 @@ export class StudentRemark extends SequelizeModel<StudentRemarkInstance, IStuden
                     if (isExist) {
                         return Connection.getInstance().query<number>(
                             `UPDATE StudentRemark
-                            SET Remark = :Remark, updatedAt = GETDATE()
+                            SET Remark = :Remark, updatedAt = NOW()
                             FROM StudentRemark
                                 JOIN Quarter ON QuarterID = Quarter.ID
-                            WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`, {
+                            WHERE StudentID = :StudentID AND StartDate < NOW() AND EndDate > NOW() AND QuarterType = 'normal';`, {
                                 replacements: {
                                     Remark, StudentID,
                                 },
@@ -99,7 +99,7 @@ export class StudentRemark extends SequelizeModel<StudentRemarkInstance, IStuden
                 `SELECT TOP(1) Remark
                 FROM StudentRemark
                     JOIN Quarter ON QuarterID = Quarter.ID
-                WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`,
+                WHERE StudentID = :StudentID AND StartDate < NOW() AND EndDate > NOW() AND QuarterType = 'normal';`,
                 { replacements: { StudentID } },
             ).pipe(
                 map((result) => {
@@ -131,7 +131,7 @@ export class StudentRemark extends SequelizeModel<StudentRemarkInstance, IStuden
             `SELECT StudentRemark.ID
             FROM StudentRemark
                 JOIN Quarter ON StudentRemark.QuarterID = Quarter.ID
-            WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`,
+            WHERE StudentID = :StudentID AND StartDate < NOW() AND EndDate > NOW() AND QuarterType = 'normal';`,
             { replacements: { StudentID } },
         ).pipe(
             map((result) => result.length !== 0),

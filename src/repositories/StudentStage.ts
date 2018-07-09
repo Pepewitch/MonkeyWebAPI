@@ -82,7 +82,7 @@ export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentS
             `SELECT TOP(1) ${selectStatement}
             FROM StudentState
                 JOIN Quarter ON QuarterID = Quarter.ID
-            WHERE StudentID = :StudentID AND StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = 'normal';`, {
+            WHERE StudentID = :StudentID AND StartDate < NOW() AND EndDate > NOW() AND QuarterType = 'normal';`, {
                 replacements: { StudentID },
             },
         ).pipe(
