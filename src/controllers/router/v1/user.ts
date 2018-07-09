@@ -3,7 +3,8 @@ import { body, oneOf, param } from "express-validator/check";
 import { Observable } from "rxjs";
 import { UserPosition } from "../../../models/v1/users";
 import { User } from "../../../repositories/Users";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { userProfile } from "../util/fileHandler";
+import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
 export const router = Router();
 
 router.get(
@@ -50,6 +51,18 @@ router.get(
             (position) => res.status(200).send({ position }),
             errorHandler(res),
         );
+    },
+);
+
+router.post(
+    "/upload/:userID",
+    authenticateRequest,
+    userProfile,
+    validateFile,
+    param("userID").isInt(),
+    validateRequest,
+    (req, res) => {
+        // TODO: Implement upload file
     },
 );
 
