@@ -1,7 +1,7 @@
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
-import { IQuarterModel, QuarterInstance, quarterModel, QuarterType } from "../models/v1/quarter";
+import { IQuarterModel, QuarterInstance, quarterModel, QuarterType as Type } from "../models/v1/quarter";
 import { SequelizeModel } from "./SequelizeModel";
 
 export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
@@ -23,8 +23,7 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
     public add(
         ID: number,
         QuarterName: string,
-        // tslint:disable-next-line:no-shadowed-variable
-        QuarterType: QuarterType,
+        QuarterType: Type,
         StartDate: Date,
         EndDate: Date,
     ): Observable<IQuarterModel> {
@@ -32,10 +31,10 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
     }
 
     public defaultQuarter(
-        type = QuarterType.normal,
+        type = Type.normal,
     ): Observable<IQuarterModel> {
         return Connection.getInstance().select<IQuarterModel>(
-            `SELECT * FROM Quarter WHERE StartDate < GETDATE() AND EndDate > GETDATE() AND QuarterType = :type`,
+            `SELECT * FROM Quarter WHERE StartDate < NOW() AND EndDate > NOW() AND QuarterType = :type`,
             {
                 replacements: { type },
             },
@@ -49,8 +48,12 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
         );
     }
 
-    public list(): Observable<IQuarterModel[]> {
-        return from(this.model.findAll({ raw: true }));
+    public list(QuarterType?: Type): Observable<IQuarterModel[]> {
+        if (QuarterType) {
+            return from(this.model.findAll({ where: { QuarterType }, raw: true }));
+        } else {
+            return from(this.model.findAll({ raw: true }));
+        }
     }
 
     public delete(
