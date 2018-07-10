@@ -5,7 +5,7 @@ import { UserPosition } from "../../../models/v1/users";
 import { FileManager } from "../../../repositories/FileManager";
 import { User } from "../../../repositories/Users";
 import { userProfile } from "../util/fileHandler";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
 export const router = Router();
 
 router.get(
@@ -98,7 +98,7 @@ router.post(
 
 router.post(
     "/addStudent",
-    authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
+    authorizeRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
     body("nextStudentID").isInt(),
     (req, res) => {
         let observable: Observable<string>;
@@ -150,7 +150,7 @@ router.post(
 
 // router.post(
 //     "/register",
-//     authenticateRequestWithPosition(UserPosition.student, UserPosition.admin, UserPosition.dev, UserPosition.mel),
+//     authorizeRequestWithPosition(UserPosition.student, UserPosition.admin, UserPosition.dev, UserPosition.mel),
 //     body("userID").isInt(),
 //     body("firstname").isString(),
 //     body("lastname").isString(),

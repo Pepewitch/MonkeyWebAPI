@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator/check";
 import { Room } from "../../../repositories/Room";
-import { authenticateRequest, authenticateRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -20,7 +20,7 @@ router.get(
 
 router.post(
     "/",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("roomName").isString(),
     body("quarterID").isInt(),
     body("maxSeat").isInt(),
@@ -36,7 +36,7 @@ router.post(
 
 router.delete(
     "/:roomID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("roomID").isInt(),
     validateRequest,
     (req, res) => {

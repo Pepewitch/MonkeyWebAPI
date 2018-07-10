@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { submissionDocuments } from "../util/fileHandler";
-import { authenticateRequestWithTutorPosition, validateFile } from "../util/requestValidator";
+import { authorizeRequestWithTutorPosition, validateFile } from "../util/requestValidator";
 
 export const router = Router();
 
 router.post(
     "/upload",
-    authenticateRequestWithTutorPosition,
+    authorizeRequestWithTutorPosition,
     submissionDocuments,
     validateFile,
     (req, res) => {
@@ -14,3 +14,9 @@ router.post(
         res.sendStatus(200);
     },
 );
+
+// router.post(
+//     "/add",
+//     authenticateRequestWithTutorPosition,
+
+// )

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body, param, query } from "express-validator/check";
 import { ClassType } from "../../../models/v1/class";
 import { Class } from "../../../repositories/Class";
-import { authenticateRequest, authenticateRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -20,9 +20,14 @@ router.get(
     },
 );
 
+// router.get(
+//     "/submission",
+//     authenticateRequestWithTutorPosition,
+// )
+
 router.post(
     "/course",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("className").isString(),
     body("quarterID").isInt(),
     body("classSubject").isString(),
@@ -43,7 +48,7 @@ router.post(
 
 router.post(
     "/skill",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("className").isString(),
     body("quarterID").isInt(),
     body("classSubject").isString(),
@@ -64,7 +69,7 @@ router.post(
 
 router.post(
     "/hybrid",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("className").isString(),
     body("quarterID").isInt(),
     body("classSubject").isString(),
@@ -83,10 +88,14 @@ router.post(
 
 router.delete(
     "/:classID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("classID").isInt(),
     validateRequest,
     (req, res) => {
         Class.getInstance().delete(req.params.classID).subscribe(completionHandler(res));
     },
 );
+
+// router.patch(
+//     ":classID"
+// )

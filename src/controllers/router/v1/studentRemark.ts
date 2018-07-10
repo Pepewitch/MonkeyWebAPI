@@ -2,13 +2,13 @@ import { Router } from "express";
 import { body, param, query } from "express-validator/check";
 import { UserPosition } from "../../../models/v1/users";
 import { StudentRemark } from "../../../repositories/StudentRemark";
-import { authenticateRequest, authenticateRequestWithAdminPosition, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.get(
     "/",
-    authenticateRequestWithPosition(UserPosition.student),
+    authorizeRequestWithPosition(UserPosition.student),
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
@@ -35,7 +35,7 @@ router.get(
 
 router.post(
     "/:studentID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("studentID").isInt(),
     body("remark").isString(),
     body("quarterID").isInt().optional(),

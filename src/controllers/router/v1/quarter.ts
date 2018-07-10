@@ -3,7 +3,7 @@ import { body, oneOf, param, query } from "express-validator/check";
 import { Observable } from "rxjs";
 import { IQuarterModel, QuarterType } from "../../../models/v1/quarter";
 import { Quarter } from "../../../repositories/Quarter";
-import { authenticateRequest, authenticateRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -40,7 +40,7 @@ router.get(
 
 router.post(
     "/",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("quarterID").isInt(),
     body("quarterName").isString(),
     body("quarterType").isIn(Object.keys(QuarterType)),
@@ -60,7 +60,7 @@ router.post(
 
 router.delete(
     "/:quarterID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("quarterID").isInt(),
     validateRequest,
     (req, res) => {
@@ -70,7 +70,7 @@ router.delete(
 
 router.patch(
     "/:quarterID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("quarterID").isInt(),
     oneOf([
         body("quarterName").isString(),
