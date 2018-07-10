@@ -2,7 +2,7 @@ import Sequelize from "sequelize";
 import { quarterModel } from "./quarter";
 import { userModel } from "./users";
 
-export enum StudentStage {
+export enum StudentStageList {
     unregistered = "unregistered",
     untransferred = "untransferred",
     transferred = "transferred",
@@ -14,11 +14,11 @@ export enum StudentStage {
 }
 
 export interface IStudentStateModel {
-    ID: number;
+    ID?: number;
     Grade: number;
     QuarterID: number;
     StudentID: number;
-    Stage: StudentStage;
+    Stage: StudentStageList;
     createdAt?: Date;
     updatedAt?: Date;
 }

@@ -10,7 +10,7 @@ export enum ClassType {
 }
 
 export interface IClassModel {
-    ID: number;
+    ID?: number;
     ClassName: string;
     QuarterID: number;
     ClassDate: Date;
@@ -21,7 +21,7 @@ export interface IClassModel {
     ClassDescription?: string;
     Suggestion?: string;
     ClassTimes?: number;
-    ClassType?: ClassType;
+    ClassType: ClassType;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -91,7 +91,7 @@ export function classModel(sequalize: Sequelize.Sequelize) {
         },
         ClassType: {
             type: Sequelize.STRING(20),
-            allowNull: true,
+            allowNull: false,
         },
     };
 

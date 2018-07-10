@@ -1,8 +1,14 @@
 import Sequelize from "sequelize";
 import { classModel } from "./class";
 
+export enum SubmissionState {
+    accepted = "accepted",
+    rejected = "rejected",
+    pending = "pending",
+}
+
 export interface ISubmissionModel {
-    ID: number;
+    ID?: number;
     ClassID: number;
     SubmissionState: string;
     SubmissionTimes: number;
