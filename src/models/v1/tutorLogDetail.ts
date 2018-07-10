@@ -6,6 +6,7 @@ export enum DetailType {
     course = "course",
     sheet = "sheet",
     reading = "reading",
+    meeting = "meeting",
     admin = "admin",
     developer = "developer",
 }

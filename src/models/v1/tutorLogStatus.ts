@@ -46,6 +46,7 @@ export function tutorLogStatusModel(sequalize: Sequelize.Sequelize) {
         TutorLogStatus: {
             type: Sequelize.STRING(20),
             allowNull: false,
+            defaultValue: TutorLogStatus.waiting,
         },
     };
 
