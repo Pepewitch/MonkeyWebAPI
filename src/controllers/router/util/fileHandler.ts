@@ -6,4 +6,4 @@ export const submissionDocuments = multer({
 
 export const userProfile = multer({
     storage: multer.diskStorage({}),
-}).single();
+}).single("profile");

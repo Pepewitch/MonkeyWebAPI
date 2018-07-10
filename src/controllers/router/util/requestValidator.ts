@@ -115,12 +115,11 @@ function authenticateUser(
     res: Response,
     next: NextFunction,
 ): void {
-    try {
-        req.user = {
-            id: JWTAuth.decodeToken(req.authToken),
-        };
+    const id = JWTAuth.decodeToken(req.authToken);
+    if (id !== null) {
+        req.user = { id };
         next();
-    } catch (_) {
+    } else {
         res.sendStatus(401);
     }
 }
