@@ -15,13 +15,13 @@ export interface IClassModel {
     QuarterID: number;
     ClassDate: Date;
     ClassSubject: string;
-    Grade: string;
-    TutorID: number;
-    RoomID: number;
-    ClassDescription: string;
-    Suggestion: string;
-    ClassTimes: number;
-    ClassType: ClassType;
+    Grade?: string;
+    TutorID?: number;
+    RoomID?: number;
+    ClassDescription?: string;
+    Suggestion?: string;
+    ClassTimes?: number;
+    ClassType?: ClassType;
     createdAt?: Date;
     updatedAt?: Date;
 }
