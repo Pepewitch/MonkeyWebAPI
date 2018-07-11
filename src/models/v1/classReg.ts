@@ -10,7 +10,7 @@ export enum RegStatus {
 }
 
 export interface IClassRegModel {
-    ID: number;
+    ID?: number;
     StudentID: number;
     ClassID: number;
     RegStatus: RegStatus;

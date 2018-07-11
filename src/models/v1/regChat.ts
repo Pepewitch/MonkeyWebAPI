@@ -4,7 +4,7 @@ import { quarterModel } from "./quarter";
 import { userModel } from "./users";
 
 export interface IRegChatModel {
-    ID: number;
+    ID?: number;
     StudentID: number;
     ChatMessage: string;
     QuarterID: number;
