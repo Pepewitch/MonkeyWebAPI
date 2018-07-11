@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, oneOf, param } from "../../../../node_modules/express-validator/check";
+import { body, oneOf, param } from "express-validator/check";
 import { StudentInfo } from "../../../repositories/StudentInfo";
 import { authorizeRequestWithAdminPosition, completionHandler, validateRequest } from "../util/requestValidator";
 

@@ -1,5 +1,4 @@
-import WebSocket from "ws";
-import { Server } from "ws";
+import WebSocket, { Server } from "ws";
 import { SocketGenerator } from "../../socket";
 import { ClassCard } from "../../types/ClassCard";
 import { ClassSocketResult } from "../../types/ClassSocketResult";

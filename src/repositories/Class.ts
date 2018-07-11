@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { from, Observable } from "../../node_modules/rxjs";
-import { map } from "../../node_modules/rxjs/operators";
+import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { ClassInstance, classModel, ClassType as Type, IClassModel } from "../models/v1/class";
 import { ClassCard } from "../types/ClassCard";

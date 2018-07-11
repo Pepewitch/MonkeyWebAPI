@@ -4,7 +4,7 @@ import { submissionModel } from "./submission";
 import { userModel } from "./users";
 
 export interface ISubmissionChatModel {
-    ID: number;
+    ID?: number;
     SubmissionID: number;
     ChatMessage: string;
     SenderID: number;
@@ -16,7 +16,7 @@ export interface ISubmissionChatModel {
 export type SubmissionChatInstance = Sequelize.Instance<ISubmissionChatModel> & ISubmissionChatModel;
 
 // tslint:disable:object-literal-sort-keys
-export function SubmissionChatModel(sequalize: Sequelize.Sequelize) {
+export function submissionChatModel(sequalize: Sequelize.Sequelize) {
     const attributes: SequelizeAttributes<ISubmissionChatModel> = {
         ID: {
             type: Sequelize.INTEGER,

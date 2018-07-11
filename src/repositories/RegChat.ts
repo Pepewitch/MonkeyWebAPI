@@ -1,6 +1,6 @@
 import { from, Observable } from "rxjs";
 import { flatMap } from "rxjs/operators";
-import { map } from "../../node_modules/rxjs/operators";
+import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { Visibility as Type } from "../models/util/context";
 import { IRegChatModel, RegChatInstance, regChatModel } from "../models/v1/regChat";
