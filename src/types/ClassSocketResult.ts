@@ -1,4 +1,4 @@
-import { ClassCard } from "classCard";
+import { ClassCard } from "ClassCard";
 import { IClassSocketQuery } from "IClassSocketQuery";
 
 export class ClassSocketResult {

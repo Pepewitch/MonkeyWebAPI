@@ -3,7 +3,7 @@ import { body } from "express-validator/check";
 import { User } from "../../repositories/Users";
 import { JWTAuth } from "../auth/JWTAuth";
 import { authenticateRequest, validateRequest } from "./util/requestValidator";
-import { router as v1 } from "./v1/index";
+import { router as v1 } from "./v1";
 
 export const router = Router();
 
