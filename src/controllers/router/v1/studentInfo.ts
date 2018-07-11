@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, oneOf, param } from "../../../../node_modules/express-validator/check";
 import { StudentInfo } from "../../../repositories/StudentInfo";
-import { authenticateRequestWithAdminPosition, completionHandler, validateRequest } from "../util/requestValidator";
+import { authorizeRequestWithAdminPosition, completionHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -38,7 +38,7 @@ export const router = Router();
 
 router.post(
     "/",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("studentID").isInt(),
     oneOf([
         body("phone").isMobilePhone("th-TH"),
@@ -58,7 +58,7 @@ router.post(
 
 router.delete(
     "/:studentID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("studentID").isInt(),
     validateRequest,
     (req, res) => {

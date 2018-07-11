@@ -3,13 +3,13 @@ import { body, param, query } from "express-validator/check";
 import { StudentStageList } from "../../../models/v1/studentState";
 import { UserPosition } from "../../../models/v1/users";
 import { StudentStage } from "../../../repositories/StudentStage";
-import { authenticateRequest, authenticateRequestWithAdminPosition, authenticateRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.get(
     "/",
-    authenticateRequestWithPosition(UserPosition.student),
+    authorizeRequestWithPosition(UserPosition.student),
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
@@ -36,7 +36,7 @@ router.get(
 
 router.get(
     "/grade",
-    authenticateRequestWithPosition(UserPosition.student),
+    authorizeRequestWithPosition(UserPosition.student),
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
@@ -63,7 +63,7 @@ router.get(
 
 router.post(
     "/:studentID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("studentID").isInt(),
     body("quarterID").isInt(),
     body("stage").isIn(Object.keys(StudentStageList)),

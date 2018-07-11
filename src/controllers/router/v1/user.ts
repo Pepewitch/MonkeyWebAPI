@@ -2,41 +2,23 @@ import { Router } from "express";
 import { body, oneOf, param } from "express-validator/check";
 import { Observable } from "rxjs";
 import { UserPosition } from "../../../models/v1/users";
+import { FileManager } from "../../../repositories/FileManager";
 import { User } from "../../../repositories/Users";
 import { userProfile } from "../util/fileHandler";
-import { authenticateRequest, authenticateRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
+
 export const router = Router();
-
-router.get(
-    "/",
-    authenticateRequest,
-    (req, res) => {
-        User.getInstance().getUserInfo(req.user.id).subscribe(
-            (info) => res.status(200).send({ info }),
-            errorHandler(res),
-        );
-    },
-);
-
-router.get(
-    "/:userID",
-    authenticateRequest,
-    param("userID"),
-    (req, res) => {
-        User.getInstance().getUserInfo(req.params.userID).subscribe(
-            (info) => res.status(200).send({ info }),
-            errorHandler,
-        );
-    },
-);
 
 router.get(
     "/position",
     authenticateRequest,
     (req, res) => {
-        User.getInstance().getPosition(req.user.id).subscribe(
-            (position) => res.status(200).send({ position }),
-            errorHandler(res),
+        User
+            .getInstance()
+            .getPosition(req.user.id)
+            .subscribe(
+                (position) => res.status(200).send({ position }),
+                errorHandler(res),
         );
     },
 );
@@ -47,9 +29,55 @@ router.get(
     param("userID").isInt(),
     validateRequest,
     (req, res) => {
-        User.getInstance().getPosition(req.params.userID).subscribe(
-            (position) => res.status(200).send({ position }),
-            errorHandler(res),
+        User
+            .getInstance()
+            .getPosition(req.params.userID)
+            .subscribe(
+                (position) => res.status(200).send({ position }),
+                errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/profile",
+    authenticateRequest,
+    (req, res) => {
+        FileManager
+            .getInstance()
+            .getProfile(req.user.id)
+            .subscribe(
+                (link) => res.status(200).send({ link }),
+                errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/:userID",
+    authenticateRequest,
+    param("userID").isInt(),
+    (req, res) => {
+        User
+            .getInstance()
+            .getUserInfo(req.params.userID)
+            .subscribe(
+                (info) => res.status(200).send({ info }),
+                errorHandler,
+        );
+    },
+);
+
+router.get(
+    "/",
+    authenticateRequest,
+    (req, res) => {
+        User
+            .getInstance()
+            .getUserInfo(req.user.id)
+            .subscribe(
+                (info) => res.status(200).send({ info }),
+                errorHandler(res),
         );
     },
 );
@@ -62,13 +90,16 @@ router.post(
     param("userID").isInt(),
     validateRequest,
     (req, res) => {
-        // TODO: Implement upload file
+        FileManager
+            .getInstance()
+            .uploadProfile(req.params.userID, req.file)
+            .subscribe(completionHandler(res));
     },
 );
 
 router.post(
     "/addStudent",
-    authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
+    authorizeRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel),
     body("nextStudentID").isInt(),
     (req, res) => {
         let observable: Observable<string>;
@@ -77,9 +108,10 @@ router.post(
         } else {
             observable = User.getInstance().generateStudent();
         }
-        observable.subscribe(
-            (password) => res.status(200).send({ password }),
-            errorHandler(res),
+        observable
+            .subscribe(
+                (password) => res.status(200).send({ password }),
+                errorHandler(res),
         );
     },
 );
@@ -119,7 +151,7 @@ router.post(
 
 // router.post(
 //     "/register",
-//     authenticateRequestWithPosition(UserPosition.student, UserPosition.admin, UserPosition.dev, UserPosition.mel),
+//     authorizeRequestWithPosition(UserPosition.student, UserPosition.admin, UserPosition.dev, UserPosition.mel),
 //     body("userID").isInt(),
 //     body("firstname").isString(),
 //     body("lastname").isString(),

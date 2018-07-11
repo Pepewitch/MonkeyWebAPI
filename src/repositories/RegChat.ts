@@ -6,6 +6,7 @@ import { Visibility as Type } from "../models/util/context";
 import { IRegChatModel, RegChatInstance, regChatModel } from "../models/v1/regChat";
 import { Quarter } from "./Quarter";
 import { SequelizeModel } from "./SequelizeModel";
+import { partialOf } from "./util/ObjectMapper";
 
 export class RegChat extends SequelizeModel<RegChatInstance, IRegChatModel> {
 
@@ -50,14 +51,7 @@ export class RegChat extends SequelizeModel<RegChatInstance, IRegChatModel> {
         ID: number,
         value: Partial<IRegChatModel>,
     ): Observable<number> {
-        let updateValue = {} as Partial<IRegChatModel>;
-        if (value.ChatMessage) {
-            updateValue = { ...updateValue, ChatMessage: value.ChatMessage };
-        }
-        if (value.Visibility) {
-            updateValue = { ...updateValue, Visibility: value.Visibility };
-        }
-        return from(this.model.update(updateValue, { where: { ID } }))
+        return from(this.model.update(partialOf<IRegChatModel>(value), { where: { ID } }))
             .pipe(
                 map((regChat) => regChat[0]),
         );

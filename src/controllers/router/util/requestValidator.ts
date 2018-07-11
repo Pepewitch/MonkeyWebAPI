@@ -15,21 +15,21 @@ export const authenticateRequest = compose([
     authenticateUser,
 ]);
 
-export const authenticateRequestWithAdminPosition = authenticateRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel);
+export const authorizeRequestWithAdminPosition = authorizeRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel);
 
-export const authenticateRequestWithTutorPosition =
-    authenticateRequestWithPosition(UserPosition.tutor, UserPosition.admin, UserPosition.dev, UserPosition.mel);
+export const authorizeRequestWithTutorPosition = authorizeRequestWithoutPosition(UserPosition.student);
+// authorizeRequestWithPosition(UserPosition.tutor, UserPosition.admin, UserPosition.dev, UserPosition.mel);
 
-export function authenticateRequestWithoutPosition(...positions: UserPosition[]): RequestHandler {
+export function authorizeRequestWithoutPosition(...positions: UserPosition[]): RequestHandler {
     const validPosition = _.pullAll(Object.keys(UserPosition), positions);
-    return authenticatePosition(validPosition as UserPosition[]);
+    return authorizePosition(validPosition as UserPosition[]);
 }
 
-export function authenticateRequestWithPosition(...positions: UserPosition[]): RequestHandler {
-    return authenticatePosition(positions);
+export function authorizeRequestWithPosition(...positions: UserPosition[]): RequestHandler {
+    return authorizePosition(positions);
 }
 
-function authenticatePosition(positions: UserPosition[]): RequestHandler {
+function authorizePosition(positions: UserPosition[]): RequestHandler {
     return compose([
         authenticateRequest,
         (req: Request, res: Response, next: NextFunction) => {
@@ -115,12 +115,11 @@ function authenticateUser(
     res: Response,
     next: NextFunction,
 ): void {
-    try {
-        req.user = {
-            id: JWTAuth.decodeToken(req.authToken),
-        };
+    const id = JWTAuth.decodeToken(req.authToken);
+    if (id !== null) {
+        req.user = { id };
         next();
-    } catch (_) {
+    } else {
         res.sendStatus(401);
     }
 }

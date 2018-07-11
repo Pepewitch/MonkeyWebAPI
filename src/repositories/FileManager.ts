@@ -1,6 +1,8 @@
 import Storage, { Bucket, File } from "@google-cloud/storage";
+import { removeSync } from "fs-extra";
 import { join } from "path";
 import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { GOOGLE_APPLICATION_CREDENTIALS, GOOGLE_CLOUD_PROJECT_ID } from "../util/secrets";
 
 export class FileManager {
@@ -24,15 +26,29 @@ export class FileManager {
             projectId: GOOGLE_CLOUD_PROJECT_ID,
         });
         this.bucket = this.storage.bucket(FileManager.BUCKET_NAME);
-        this.storage.getBuckets().then((result) => {
-            console.log(result);
-        }).catch((err) => {
-            console.log(err);
-        });
     }
 
-    public uploadProfile(file: Express.Multer.File): Observable<[File]> {
-        return from(this.bucket.upload(join(file.destination, file.filename)));
+    public uploadProfile(userID: number, file: Express.Multer.File): Observable<[File]> {
+        return from(this.bucket.upload(file.path, {
+            destination: `profile-${userID}.png`,
+        })).pipe(
+            map((result) => {
+                removeSync(file.path);
+                return result;
+            }),
+        );
+    }
+
+    public getProfile(userID: number): Observable<string> {
+        return from(
+            this.bucket
+                .file(`profile-${userID}.png`)
+                .getSignedUrl({
+                    action: "read",
+                }),
+        ).pipe(
+            map((result) => result[0]),
+        );
     }
 
 }

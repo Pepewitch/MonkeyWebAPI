@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { body, param, query } from "express-validator/check";
+import { body, oneOf, param, query } from "express-validator/check";
 import { ClassType } from "../../../models/v1/class";
 import { Class } from "../../../repositories/Class";
-import { authenticateRequest, authenticateRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithTutorPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -20,9 +20,23 @@ router.get(
     },
 );
 
+// router.get(
+//     "/submission",
+//     authorizeRequestWithTutorPosition,
+//     query("tutorID").isInt().optional(),
+//     validateRequest,
+//     (req, res) => {
+//         if (req.query.tutorID) {
+
+//         } else {
+
+//         }
+//     }
+// );
+
 router.post(
     "/course",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("className").isString(),
     body("quarterID").isInt(),
     body("classSubject").isString(),
@@ -43,7 +57,7 @@ router.post(
 
 router.post(
     "/skill",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("className").isString(),
     body("quarterID").isInt(),
     body("classSubject").isString(),
@@ -64,7 +78,7 @@ router.post(
 
 router.post(
     "/hybrid",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("className").isString(),
     body("quarterID").isInt(),
     body("classSubject").isString(),
@@ -83,10 +97,44 @@ router.post(
 
 router.delete(
     "/:classID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("classID").isInt(),
     validateRequest,
     (req, res) => {
         Class.getInstance().delete(req.params.classID).subscribe(completionHandler(res));
+    },
+);
+
+router.patch(
+    "/:classID",
+    param("classID").isInt(),
+    oneOf([
+        body("className").isString(),
+        body("quarterID").isInt(),
+        body("classDate").isISO8601(),
+        body("classSubject").isString(),
+        body("grade").isString(),
+        body("tutorID").isInt(),
+        body("roomID").isInt(),
+        body("classDescription").isString(),
+        body("classTimes").isInt(),
+        body("classType").isIn(Object.keys(ClassType)),
+    ]),
+    validateRequest,
+    (req, res) => {
+        Class.getInstance().edit(
+            req.params.classID, {
+                ClassDate: req.body.classDate,
+                ClassDescription: req.body.classDescription,
+                ClassName: req.body.className,
+                ClassSubject: req.body.classSubject,
+                ClassTimes: req.body.classTimes,
+                ClassType: req.body.classType,
+                Grade: req.body.grade,
+                QuarterID: req.body.quarterID,
+                RoomID: req.body.roomID,
+                TutorID: req.body.tutorID,
+            },
+        ).subscribe(completionHandler(res));
     },
 );
