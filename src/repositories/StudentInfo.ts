@@ -3,6 +3,7 @@ import { flatMap, map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { IStudentInfoModel, StudentInfoInstance, studentInfoModel } from "../models/v1/studentInfo";
 import { SequelizeModel } from "./SequelizeModel";
+import { partialOf } from "./util/ObjectMapper";
 
 export class StudentInfo extends SequelizeModel<StudentInfoInstance, IStudentInfoModel> {
 
@@ -24,13 +25,7 @@ export class StudentInfo extends SequelizeModel<StudentInfoInstance, IStudentInf
         ID: number,
         value: Partial<IStudentInfoModel>,
     ): Observable<number> {
-        let setValue = {} as Partial<IStudentInfoModel>;
-        if (value.Phone) {
-            setValue = { ...setValue, Phone: value.Phone };
-        }
-        if (value.School) {
-            setValue = { ...setValue, School: value.School };
-        }
+        let setValue = partialOf<IStudentInfoModel>(value);
         return this.checkExist(ID)
             .pipe(
                 flatMap((isExist) => {
