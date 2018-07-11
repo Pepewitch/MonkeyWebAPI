@@ -1,5 +1,5 @@
-import { from, Observable } from "../../node_modules/rxjs";
-import { map } from "../../node_modules/rxjs/operators";
+import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { ClassRegInstance, classRegModel, IClassRegModel , RegStatus as Type } from "../models/v1/classReg";
 import { SequelizeModel } from "./SequelizeModel";
@@ -21,12 +21,11 @@ export class ClassReg extends SequelizeModel<ClassRegInstance, IClassRegModel> {
     }
 
     public add(
-        ID: number,
         StudentID: number,
         ClassID: number,
         RegStatus: Type,
     ): Observable<IClassRegModel> {
-        return from(this.model.create({ ID, StudentID, ClassID, RegStatus }));
+        return from(this.model.create({ StudentID, ClassID, RegStatus }));
     }
 
     public delete(
@@ -37,15 +36,11 @@ export class ClassReg extends SequelizeModel<ClassRegInstance, IClassRegModel> {
 
     public edit(
         ID: number,
-        value: Partial<IClassRegModel>,
+        RegStatus: Type,
     ): Observable<number> {
-        let updateValue = {} as Partial<IClassRegModel>;
-        if (value.RegStatus) {
-            updateValue = { ...updateValue, RegStatus: value.RegStatus };
-        }
-        return from(this.model.update(updateValue, { where: { ID } }))
+        return from(this.model.update( { RegStatus }, { where: { ID } }))
             .pipe(
                 map((classReg) => classReg[0]),
-        );
+            );
     }
 }
