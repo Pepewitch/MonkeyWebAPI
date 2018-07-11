@@ -9,8 +9,8 @@ export const router = Router();
 
 router.get(
     "/",
-    query("type").isIn(Object.keys(QuarterType)).optional(),
     authenticateRequest,
+    query("type").isIn(Object.keys(QuarterType)).optional(),
     (req, res) => {
         Quarter.getInstance().list(req.query.type).subscribe(
             (quarters) => res.status(200).send({ quarters }),
@@ -74,6 +74,7 @@ router.patch(
     param("quarterID").isInt(),
     oneOf([
         body("quarterName").isString(),
+        body("quarterType").isIn(Object.keys(QuarterType)),
         body("startDate").isISO8601(),
         body("endDate").isISO8601(),
     ]),
@@ -84,6 +85,7 @@ router.patch(
             {
                 EndDate: req.body.endDate,
                 QuarterName: req.body.quarterName,
+                QuarterType: req.body.quarterType,
                 StartDate: req.body.startDate,
             },
         ).subscribe(completionHandler(res));

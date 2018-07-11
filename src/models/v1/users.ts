@@ -9,6 +9,7 @@ export enum UserStatus {
 
 export enum UserPosition {
     student = "student",
+    office = "office",
     tutor = "tutor",
     admin = "admin",
     dev = "dev",
