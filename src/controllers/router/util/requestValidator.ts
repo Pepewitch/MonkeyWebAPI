@@ -17,8 +17,8 @@ export const authenticateRequest = compose([
 
 export const authorizeRequestWithAdminPosition = authorizeRequestWithPosition(UserPosition.admin, UserPosition.dev, UserPosition.mel);
 
-export const authorizeRequestWithTutorPosition =
-    authorizeRequestWithPosition(UserPosition.tutor, UserPosition.admin, UserPosition.dev, UserPosition.mel);
+export const authorizeRequestWithTutorPosition = authorizeRequestWithoutPosition(UserPosition.student);
+// authorizeRequestWithPosition(UserPosition.tutor, UserPosition.admin, UserPosition.dev, UserPosition.mel);
 
 export function authorizeRequestWithoutPosition(...positions: UserPosition[]): RequestHandler {
     const validPosition = _.pullAll(Object.keys(UserPosition), positions);

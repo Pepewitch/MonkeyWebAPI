@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body, oneOf, param, query } from "express-validator/check";
 import { ClassType } from "../../../models/v1/class";
 import { Class } from "../../../repositories/Class";
-import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithTutorPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -22,8 +22,17 @@ router.get(
 
 // router.get(
 //     "/submission",
-//     authenticateRequestWithTutorPosition,
-// )
+//     authorizeRequestWithTutorPosition,
+//     query("tutorID").isInt().optional(),
+//     validateRequest,
+//     (req, res) => {
+//         if (req.query.tutorID) {
+
+//         } else {
+
+//         }
+//     }
+// );
 
 router.post(
     "/course",
