@@ -1,7 +1,9 @@
 import { from, Observable } from "../../node_modules/rxjs";
+import { map } from "../../node_modules/rxjs/operators";
 import { Connection } from "../models/Connection";
 import { ClassInstance, classModel, ClassType as Type, IClassModel } from "../models/v1/class";
 import { SequelizeModel } from "./SequelizeModel";
+import { partialOf } from "./util/ObjectMapper";
 
 export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
@@ -88,5 +90,15 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
         ID: number,
     ): Observable<number> {
         return from(this.model.destroy({ where: { ID } }));
+    }
+
+    public edit(
+        ID: number,
+        value: Partial<IClassModel>,
+    ): Observable<number> {
+        return from(this.model.update(partialOf<IClassModel>(value), { where: { ID } }))
+            .pipe(
+                map((result) => result[0]),
+        );
     }
 }

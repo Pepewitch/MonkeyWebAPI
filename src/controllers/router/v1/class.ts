@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, param, query } from "express-validator/check";
+import { body, oneOf, param, query } from "express-validator/check";
 import { ClassType } from "../../../models/v1/class";
 import { Class } from "../../../repositories/Class";
 import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
@@ -96,6 +96,36 @@ router.delete(
     },
 );
 
-// router.patch(
-//     ":classID"
-// )
+router.patch(
+    "/:classID",
+    param("classID").isInt(),
+    oneOf([
+        body("className").isString(),
+        body("quarterID").isInt(),
+        body("classDate").isISO8601(),
+        body("classSubject").isString(),
+        body("grade").isString(),
+        body("tutorID").isInt(),
+        body("roomID").isInt(),
+        body("classDescription").isString(),
+        body("classTimes").isInt(),
+        body("classType").isIn(Object.keys(ClassType)),
+    ]),
+    validateRequest,
+    (req, res) => {
+        Class.getInstance().edit(
+            req.params.classID, {
+                ClassDate: req.body.classDate,
+                ClassDescription: req.body.classDescription,
+                ClassName: req.body.className,
+                ClassSubject: req.body.classSubject,
+                ClassTimes: req.body.classTimes,
+                ClassType: req.body.classType,
+                Grade: req.body.grade,
+                QuarterID: req.body.quarterID,
+                RoomID: req.body.roomID,
+                TutorID: req.body.tutorID,
+            },
+        ).subscribe(completionHandler(res));
+    },
+);

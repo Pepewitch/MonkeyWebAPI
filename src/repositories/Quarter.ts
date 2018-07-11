@@ -3,6 +3,7 @@ import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { IQuarterModel, QuarterInstance, quarterModel, QuarterType as Type } from "../models/v1/quarter";
 import { SequelizeModel } from "./SequelizeModel";
+import { partialOf } from "./util/ObjectMapper";
 
 export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
 
@@ -66,17 +67,7 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
         ID: number,
         value: Partial<IQuarterModel>,
     ): Observable<number> {
-        let updateValue = {} as Partial<IQuarterModel>;
-        if (value.StartDate) {
-            updateValue = { ...updateValue, StartDate: value.StartDate };
-        }
-        if (value.EndDate) {
-            updateValue = { ...updateValue, EndDate: value.EndDate };
-        }
-        if (value.QuarterName) {
-            updateValue = { ...updateValue, QuarterName: value.QuarterName };
-        }
-        return from(this.model.update(updateValue, { where: { ID } }))
+        return from(this.model.update(partialOf<IQuarterModel>(value), { where: { ID } }))
             .pipe(
                 map((quarter) => quarter[0]),
         );

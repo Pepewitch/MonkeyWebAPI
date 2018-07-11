@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, param, query } from "express-validator/check";
+import { body, oneOf, param, query } from "express-validator/check";
 import { Room } from "../../../repositories/Room";
 import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
@@ -41,5 +41,26 @@ router.delete(
     validateRequest,
     (req, res) => {
         Room.getInstance().delete(req.params.roomID).subscribe(completionHandler(res));
+    },
+);
+
+router.patch(
+    "/:roomID",
+    authorizeRequestWithAdminPosition,
+    param("roomID").isInt(),
+    oneOf([
+        body("roomName").isString(),
+        body("maxSeat").isInt(),
+        body("quarterID").isInt(),
+    ]),
+    validateRequest,
+    (req, res) => {
+        Room.getInstance().edit(
+            req.params.roomID, {
+                MaxSeat: req.body.maxSeat,
+                QuarterID: req.body.quarterID,
+                RoomName: req.body.roomName,
+            },
+        ).subscribe(completionHandler(res));
     },
 );
