@@ -1,7 +1,7 @@
 export class ClassCard {
 
     constructor(
-        private ID: number,
+        public ID: number,
         private title: string,
         private maxSubmission: number,
         private submissions: Array<{ status: string, count: number }>,
@@ -23,6 +23,10 @@ export class ClassCard {
             student: this.student,
             room: this.room,
         });
+    }
+
+    public addSubmission(value: { status: string, count: number }) {
+        this.submissions.push(value);
     }
 
 }

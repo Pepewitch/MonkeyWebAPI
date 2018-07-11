@@ -20,19 +20,18 @@ router.get(
     },
 );
 
-// router.get(
-//     "/submission",
-//     authorizeRequestWithTutorPosition,
-//     query("tutorID").isInt().optional(),
-//     validateRequest,
-//     (req, res) => {
-//         if (req.query.tutorID) {
-
-//         } else {
-
-//         }
-//     }
-// );
+router.get(
+    "/submission",
+    authorizeRequestWithTutorPosition,
+    query("tutorID").isInt().optional(),
+    validateRequest,
+    (req, res) => {
+        Class.getInstance().getSubmission(req.query.tutorID || req.user.id).subscribe(
+            (classes) => res.status(200).send({ classes }),
+            errorHandler(res),
+        );
+    },
+);
 
 router.post(
     "/course",
