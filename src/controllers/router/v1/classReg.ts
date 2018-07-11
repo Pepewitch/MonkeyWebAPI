@@ -3,13 +3,13 @@ import { body, param } from "express-validator/check";
 import { RegStatus } from "../../../models/v1/classReg";
 import { UserPosition } from "../../../models/v1/users";
 import { ClassReg } from "../../../repositories/ClassReg";
-import { authenticateRequestWithAdminPosition, authenticateRequestWithoutPosition, completionHandler, validateRequest } from "../util/requestValidator";
+import { authorizeRequestWithAdminPosition, authorizeRequestWithoutPosition, completionHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.post(
     "/",
-    authenticateRequestWithoutPosition(UserPosition.tutor, UserPosition.office),
+    authorizeRequestWithoutPosition(UserPosition.tutor, UserPosition.office),
     body("studentID").isInt().optional(),
     body("classID").isInt(),
     body("regStatus").isIn(Object.keys(RegStatus)),
@@ -25,7 +25,7 @@ router.post(
 
 router.delete(
     "/:classRegID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("classRegID").isInt(),
     validateRequest,
     (req, res) => {
@@ -36,7 +36,7 @@ router.delete(
 
 router.patch(
     "/:classRegID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("classRegID").isInt(),
     body("regStatus").isIn(Object.keys(RegStatus)),
     validateRequest,

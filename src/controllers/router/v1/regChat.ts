@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { body, param, oneOf } from "express-validator/check";
+import { body, oneOf, param } from "express-validator/check";
 import { Visibility } from "../../../models/util/context";
 import { RegChat } from "../../../repositories/RegChat";
-import { authenticateRequestWithAdminPosition, completionHandler, validateRequest } from "../util/requestValidator";
+import { authorizeRequestWithAdminPosition, completionHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.post(
     "/",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     body("studentID").isInt(),
     body("chatMessage").isString(),
     body("quarterID").isInt().optional(),
@@ -26,7 +26,7 @@ router.post(
 
 router.delete(
     "/:regChatID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("regChatID").isInt(),
     validateRequest,
     (req, res) => {
@@ -36,7 +36,7 @@ router.delete(
 
 router.patch(
     "/:regChatID",
-    authenticateRequestWithAdminPosition,
+    authorizeRequestWithAdminPosition,
     param("regChatID").isInt(),
     oneOf([
         body("chatMessage").isString(),

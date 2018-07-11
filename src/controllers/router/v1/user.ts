@@ -6,6 +6,7 @@ import { FileManager } from "../../../repositories/FileManager";
 import { User } from "../../../repositories/Users";
 import { userProfile } from "../util/fileHandler";
 import { authenticateRequest, authorizeRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
+
 export const router = Router();
 
 router.get(
