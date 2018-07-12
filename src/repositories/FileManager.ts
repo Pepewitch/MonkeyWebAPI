@@ -1,4 +1,5 @@
 import Storage, { Bucket, File } from "@google-cloud/storage";
+import { Response } from "express";
 import { removeSync } from "fs-extra";
 import { join } from "path";
 import { from, Observable } from "rxjs";
@@ -12,6 +13,12 @@ export class FileManager {
             this.instance = new FileManager();
         }
         return this.instance;
+    }
+
+    public static cleanUp(res: Response, path: string) {
+        res.on("finish", () => {
+            removeSync(path);
+        });
     }
 
     private static instance: FileManager;
@@ -39,15 +46,15 @@ export class FileManager {
         );
     }
 
-    public getProfile(userID: number): Observable<string> {
+    public downloadProfile(userID: number): Observable<string> {
+        const path = `profile-${userID}.png`;
         return from(
             this.bucket
-                .file(`profile-${userID}.png`)
-                .getSignedUrl({
-                    action: "read",
-                }),
-        ).pipe(
-            map((result) => result[0]),
+                .file(path)
+                .download({
+                    destination: join("tmp", path),
+                })).pipe(
+                    map((_) => join("tmp", path)),
         );
     }
 
