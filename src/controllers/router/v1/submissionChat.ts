@@ -12,9 +12,12 @@ router.get(
     param("submissionID").isInt(),
     validateRequest,
     (req, res) => {
-        SubmissionChat.getInstance().list(req.params.submissionID).subscribe(
-            (chats) => res.status(200).send({ chats }),
-            errorHandler(res),
+        SubmissionChat
+            .getInstance()
+            .list(req.params.submissionID)
+            .subscribe(
+                (chats) => res.status(200).send({ chats }),
+                errorHandler(res),
         );
     },
 );
@@ -27,10 +30,12 @@ router.post(
     body("senderID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        SubmissionChat.getInstance().add(
-            req.params.submissionID,
-            req.body.message,
-            req.body.senderID || req.user.id,
+        SubmissionChat
+            .getInstance()
+            .add(
+                req.params.submissionID,
+                req.body.message,
+                req.body.senderID || req.user.id,
         ).subscribe(completionHandler(res));
     },
 );
@@ -41,7 +46,10 @@ router.post(
     param("submissionChatID").isInt(),
     validateRequest,
     (req, res) => {
-        SubmissionChat.getInstance().hide(req.params.submissionChatID).subscribe(completionHandler(res));
+        SubmissionChat
+            .getInstance()
+            .hide(req.params.submissionChatID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -51,7 +59,10 @@ router.post(
     param("submissionChatID").isInt(),
     validateRequest,
     (req, res) => {
-        SubmissionChat.getInstance().show(req.params.submissionChatID).subscribe(completionHandler(res));
+        SubmissionChat
+            .getInstance()
+            .show(req.params.submissionChatID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -65,11 +76,13 @@ router.patch(
     ]),
     validateRequest,
     (req, res) => {
-        SubmissionChat.getInstance().edit(
-            req.params.submissionChatID, {
-                ChatMessage: req.body.message,
-                SenderID: req.body.senderID,
-            },
+        SubmissionChat
+            .getInstance()
+            .edit(
+                req.params.submissionChatID, {
+                    ChatMessage: req.body.message,
+                    SenderID: req.body.senderID,
+                },
         ).subscribe(completionHandler(res));
     },
 );

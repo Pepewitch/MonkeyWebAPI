@@ -19,9 +19,10 @@ router.get(
         } else {
             observable = Quarter.getInstance().defaultQuarter();
         }
-        observable.subscribe(
-            (quarter) => res.status(200).send({ quarter }),
-            errorHandler(res),
+        observable
+            .subscribe(
+                (quarter) => res.status(200).send({ quarter }),
+                errorHandler(res),
         );
     },
 );
@@ -32,9 +33,12 @@ router.get(
     query("type").isIn(Object.keys(QuarterType)).optional(),
     validateRequest,
     (req, res) => {
-        Quarter.getInstance().list(req.query.type).subscribe(
-            (quarters) => res.status(200).send({ quarters }),
-            errorHandler(res),
+        Quarter
+            .getInstance()
+            .list(req.query.type)
+            .subscribe(
+                (quarters) => res.status(200).send({ quarters }),
+                errorHandler(res),
         );
     },
 );
@@ -49,12 +53,14 @@ router.post(
     body("endDate").isISO8601(),
     validateRequest,
     (req, res) => {
-        Quarter.getInstance().add(
-            req.body.quarterID,
-            req.body.quarterName,
-            req.body.quarterType,
-            req.body.startDate,
-            req.body.endDate,
+        Quarter
+            .getInstance()
+            .add(
+                req.body.quarterID,
+                req.body.quarterName,
+                req.body.quarterType,
+                req.body.startDate,
+                req.body.endDate,
         ).subscribe(completionHandler(res));
     },
 );
@@ -65,7 +71,10 @@ router.delete(
     param("quarterID").isInt(),
     validateRequest,
     (req, res) => {
-        Quarter.getInstance().delete(req.params.quarterID).subscribe(completionHandler(res));
+        Quarter
+            .getInstance()
+            .delete(req.params.quarterID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -81,14 +90,16 @@ router.patch(
     ]),
     validateRequest,
     (req, res) => {
-        Quarter.getInstance().edit(
-            req.params.quarterID,
-            {
-                EndDate: req.body.endDate,
-                QuarterName: req.body.quarterName,
-                QuarterType: req.body.quarterType,
-                StartDate: req.body.startDate,
-            },
+        Quarter
+            .getInstance()
+            .edit(
+                req.params.quarterID,
+                {
+                    EndDate: req.body.endDate,
+                    QuarterName: req.body.quarterName,
+                    QuarterType: req.body.quarterType,
+                    StartDate: req.body.startDate,
+                },
         ).subscribe(completionHandler(res));
     },
 );

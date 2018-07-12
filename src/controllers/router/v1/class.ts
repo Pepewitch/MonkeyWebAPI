@@ -13,9 +13,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        Class.getInstance().list(req.body.type, req.body.quarterID).subscribe(
-            (classes) => res.status(200).send({ classes }),
-            errorHandler(res),
+        Class
+            .getInstance()
+            .list(req.body.type, req.body.quarterID)
+            .subscribe(
+                (classes) => res.status(200).send({ classes }),
+                errorHandler(res),
         );
     },
 );
@@ -26,9 +29,12 @@ router.get(
     query("tutorID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        Class.getInstance().getSubmission(req.query.tutorID || req.user.id).subscribe(
-            (classes) => res.status(200).send({ classes }),
-            errorHandler(res),
+        Class
+            .getInstance()
+            .getSubmission(req.query.tutorID || req.user.id)
+            .subscribe(
+                (classes) => res.status(200).send({ classes }),
+                errorHandler(res),
         );
     },
 );
@@ -43,13 +49,15 @@ router.post(
     body("tutorID").isInt(),
     validateRequest,
     (req, res) => {
-        Class.getInstance().add(
-            req.body.className,
-            req.body.quarterID,
-            req.body.classDate,
-            req.body.classSubject,
-            req.body.tutorID,
-            ClassType.course,
+        Class
+            .getInstance()
+            .add(
+                req.body.className,
+                req.body.quarterID,
+                req.body.classDate,
+                req.body.classSubject,
+                req.body.tutorID,
+                ClassType.course,
         ).subscribe(completionHandler(res));
     },
 );
@@ -64,13 +72,15 @@ router.post(
     body("tutorID").isInt(),
     validateRequest,
     (req, res) => {
-        Class.getInstance().add(
-            req.body.className,
-            req.body.quarterID,
-            req.body.classDate,
-            req.body.classSubject,
-            req.body.tutorID,
-            ClassType.skill,
+        Class
+            .getInstance()
+            .add(
+                req.body.className,
+                req.body.quarterID,
+                req.body.classDate,
+                req.body.classSubject,
+                req.body.tutorID,
+                ClassType.skill,
         ).subscribe(completionHandler(res));
     },
 );
@@ -84,12 +94,14 @@ router.post(
     body("classDate").isISO8601(),
     validateRequest,
     (req, res) => {
-        Class.getInstance().addWithoutTutor(
-            req.body.className,
-            req.body.quarterID,
-            req.body.classDate,
-            req.body.classSubject,
-            ClassType.hybrid,
+        Class
+            .getInstance()
+            .addWithoutTutor(
+                req.body.className,
+                req.body.quarterID,
+                req.body.classDate,
+                req.body.classSubject,
+                ClassType.hybrid,
         ).subscribe(completionHandler(res));
     },
 );
@@ -100,7 +112,10 @@ router.delete(
     param("classID").isInt(),
     validateRequest,
     (req, res) => {
-        Class.getInstance().delete(req.params.classID).subscribe(completionHandler(res));
+        Class
+            .getInstance()
+            .delete(req.params.classID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -121,19 +136,21 @@ router.patch(
     ]),
     validateRequest,
     (req, res) => {
-        Class.getInstance().edit(
-            req.params.classID, {
-                ClassDate: req.body.classDate,
-                ClassDescription: req.body.classDescription,
-                ClassName: req.body.className,
-                ClassSubject: req.body.classSubject,
-                ClassTimes: req.body.classTimes,
-                ClassType: req.body.classType,
-                Grade: req.body.grade,
-                QuarterID: req.body.quarterID,
-                RoomID: req.body.roomID,
-                TutorID: req.body.tutorID,
-            },
+        Class
+            .getInstance()
+            .edit(
+                req.params.classID, {
+                    ClassDate: req.body.classDate,
+                    ClassDescription: req.body.classDescription,
+                    ClassName: req.body.className,
+                    ClassSubject: req.body.classSubject,
+                    ClassTimes: req.body.classTimes,
+                    ClassType: req.body.classType,
+                    Grade: req.body.grade,
+                    QuarterID: req.body.quarterID,
+                    RoomID: req.body.roomID,
+                    TutorID: req.body.tutorID,
+                },
         ).subscribe(completionHandler(res));
     },
 );

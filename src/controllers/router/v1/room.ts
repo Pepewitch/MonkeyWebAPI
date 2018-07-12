@@ -11,9 +11,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        Room.getInstance().list(req.query.quarterID).subscribe(
-            (rooms) => res.status(200).send({ rooms }),
-            errorHandler(res),
+        Room
+            .getInstance()
+            .list(req.query.quarterID)
+            .subscribe(
+                (rooms) => res.status(200).send({ rooms }),
+                errorHandler(res),
         );
     },
 );
@@ -26,11 +29,10 @@ router.post(
     body("maxSeat").isInt(),
     validateRequest,
     (req, res) => {
-        Room.getInstance().add(
-            req.body.roomName,
-            req.body.quarterID,
-            req.body.maxSeat,
-        ).subscribe(completionHandler(res));
+        Room
+            .getInstance()
+            .add(req.body.roomName, req.body.quarterID, req.body.maxSeat)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -40,7 +42,10 @@ router.delete(
     param("roomID").isInt(),
     validateRequest,
     (req, res) => {
-        Room.getInstance().delete(req.params.roomID).subscribe(completionHandler(res));
+        Room
+            .getInstance()
+            .delete(req.params.roomID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -55,12 +60,14 @@ router.patch(
     ]),
     validateRequest,
     (req, res) => {
-        Room.getInstance().edit(
-            req.params.roomID, {
-                MaxSeat: req.body.maxSeat,
-                QuarterID: req.body.quarterID,
-                RoomName: req.body.roomName,
-            },
+        Room
+            .getInstance()
+            .edit(
+                req.params.roomID, {
+                    MaxSeat: req.body.maxSeat,
+                    QuarterID: req.body.quarterID,
+                    RoomName: req.body.roomName,
+                },
         ).subscribe(completionHandler(res));
     },
 );

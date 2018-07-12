@@ -12,9 +12,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentRemark.getInstance().get(req.user.id, req.query.quarterID).subscribe(
-            (remark) => res.status(200).send({ remark }),
-            errorHandler(res),
+        StudentRemark
+            .getInstance()
+            .get(req.user.id, req.query.quarterID)
+            .subscribe(
+                (remark) => res.status(200).send({ remark }),
+                errorHandler(res),
         );
     },
 );
@@ -26,9 +29,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentRemark.getInstance().get(req.params.studentID, req.query.quarterID).subscribe(
-            (remark) => res.status(200).send({ remark }),
-            errorHandler(res),
+        StudentRemark
+            .getInstance()
+            .get(req.params.studentID, req.query.quarterID)
+            .subscribe(
+                (remark) => res.status(200).send({ remark }),
+                errorHandler(res),
         );
     },
 );
@@ -41,6 +47,9 @@ router.post(
     body("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentRemark.getInstance().set(req.body.studentID, req.body.remark, req.body.quarterID).subscribe(completionHandler(res));
+        StudentRemark
+            .getInstance()
+            .set(req.body.studentID, req.body.remark, req.body.quarterID)
+            .subscribe(completionHandler(res));
     },
 );

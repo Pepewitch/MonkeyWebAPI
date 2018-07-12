@@ -15,11 +15,13 @@ router.post(
     body("senderID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        RegChat.getInstance().add(
-            req.body.studentID,
-            req.body.chatMessage,
-            req.body.senderID || req.user.id,
-            req.body.quarterID,
+        RegChat
+            .getInstance()
+            .add(
+                req.body.studentID,
+                req.body.chatMessage,
+                req.body.senderID || req.user.id,
+                req.body.quarterID,
         ).subscribe(completionHandler(res));
     },
 );
@@ -30,7 +32,10 @@ router.delete(
     param("regChatID").isInt(),
     validateRequest,
     (req, res) => {
-        RegChat.getInstance().delete(req.params.quarterID).subscribe(completionHandler(res));
+        RegChat
+            .getInstance()
+            .delete(req.params.quarterID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -44,12 +49,14 @@ router.patch(
     ]),
     validateRequest,
     (req, res) => {
-        RegChat.getInstance().edit(
-            req.params.regChatID,
-            {
-                ChatMessage: req.body.chatMessage,
-                Visibility: req.body.visibility,
-            },
+        RegChat
+            .getInstance()
+            .edit(
+                req.params.regChatID,
+                {
+                    ChatMessage: req.body.chatMessage,
+                    Visibility: req.body.visibility,
+                },
         ).subscribe(completionHandler(res));
     },
 );

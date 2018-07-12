@@ -13,9 +13,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentStage.getInstance().get(req.user.id, req.query.quarterID).subscribe(
-            (studentStage) => res.status(200).send({ studentStage }),
-            errorHandler(res),
+        StudentStage
+            .getInstance()
+            .get(req.user.id, req.query.quarterID)
+            .subscribe(
+                (studentStage) => res.status(200).send({ studentStage }),
+                errorHandler(res),
         );
     },
 );
@@ -27,9 +30,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentStage.getInstance().get(req.params.studentID, req.query.quarterID).subscribe(
-            (studentState) => res.status(200).send({ studentState }),
-            errorHandler(res),
+        StudentStage
+            .getInstance()
+            .get(req.params.studentID, req.query.quarterID)
+            .subscribe(
+                (studentState) => res.status(200).send({ studentState }),
+                errorHandler(res),
         );
     },
 );
@@ -40,9 +46,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentStage.getInstance().grade(req.user.id, req.query.quarterID).subscribe(
-            (grade) => res.status(200).send({ grade }),
-            errorHandler(res),
+        StudentStage
+            .getInstance()
+            .grade(req.user.id, req.query.quarterID)
+            .subscribe(
+                (grade) => res.status(200).send({ grade }),
+                errorHandler(res),
         );
     },
 );
@@ -54,9 +63,12 @@ router.get(
     query("quarterID").isInt().optional(),
     validateRequest,
     (req, res) => {
-        StudentStage.getInstance().grade(req.params.studentID, req.query.quarterID).subscribe(
-            (grade) => res.status(200).send({ grade }),
-            errorHandler(res),
+        StudentStage
+            .getInstance()
+            .grade(req.params.studentID, req.query.quarterID)
+            .subscribe(
+                (grade) => res.status(200).send({ grade }),
+                errorHandler(res),
         );
     },
 );
@@ -70,11 +82,13 @@ router.post(
     body("grade").isInt({ min: 1, max: 12 }).optional(),
     validateRequest,
     (req, res) => {
-        StudentStage.getInstance().add(
-            req.body.quarterID,
-            req.params.studentID,
-            req.body.stage,
-            req.body.grade,
+        StudentStage
+            .getInstance()
+            .add(
+                req.body.quarterID,
+                req.params.studentID,
+                req.body.stage,
+                req.body.grade,
         ).subscribe(completionHandler(res));
     },
 );

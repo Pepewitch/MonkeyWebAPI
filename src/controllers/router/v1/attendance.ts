@@ -19,13 +19,15 @@ router.post(
     body("sender").isString(),
     validateRequest,
     (req, res) => {
-        Attendance.getInstance().add(
-            req.body.studentID || req.user.id,
-            req.body.classID,
-            req.body.attendanceDate,
-            req.body.attendanceType,
-            req.body.reason,
-            req.body.sender,
+        Attendance
+            .getInstance()
+            .add(
+                req.body.studentID || req.user.id,
+                req.body.classID,
+                req.body.attendanceDate,
+                req.body.attendanceType,
+                req.body.reason,
+                req.body.sender,
         ).subscribe(completionHandler(res));
     },
 );
@@ -46,17 +48,19 @@ router.patch(
     ]),
     validateRequest,
     (req, res) => {
-        Attendance.getInstance().edit(
-            req.params.attendanceID, {
-                AttendanceDate: req.body.attendanceDate,
-                AttendanceType: req.body.attendanceType,
-                ClassID: req.body.classID,
-                Reason: req.body.reason,
-                Remark: req.body.remark,
-                Sender: req.body.sender,
-                StudentID: req.body.studentID,
-                Visibility: req.body.visibility,
-            },
+        Attendance
+            .getInstance()
+            .edit(
+                req.params.attendanceID, {
+                    AttendanceDate: req.body.attendanceDate,
+                    AttendanceType: req.body.attendanceType,
+                    ClassID: req.body.classID,
+                    Reason: req.body.reason,
+                    Remark: req.body.remark,
+                    Sender: req.body.sender,
+                    StudentID: req.body.studentID,
+                    Visibility: req.body.visibility,
+                },
         ).subscribe(completionHandler(res));
     },
 );
@@ -67,6 +71,9 @@ router.delete(
     param("attendanceID").isInt(),
     validateRequest,
     (req, res) => {
-        Attendance.getInstance().delete(req.params.attendanceID).subscribe(completionHandler(res));
+        Attendance
+            .getInstance()
+            .delete(req.params.attendanceID)
+            .subscribe(completionHandler(res));
     },
 );
