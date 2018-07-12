@@ -1,5 +1,6 @@
-import { Router } from "express";
+import { Response, Router } from "express";
 import { body, oneOf, param } from "express-validator/check";
+import { join } from "path";
 import { Observable } from "rxjs";
 import { UserPosition } from "../../../models/v1/users";
 import { FileManager } from "../../../repositories/FileManager";
@@ -40,16 +41,20 @@ router.get(
 );
 
 router.get(
+    "/profile/:userID",
+    authenticateRequest,
+    param("userID").isInt(),
+    validateRequest,
+    (req, res) => {
+        downloadProfile(res, req.params.id);
+    },
+);
+
+router.get(
     "/profile",
     authenticateRequest,
     (req, res) => {
-        FileManager
-            .getInstance()
-            .getProfile(req.user.id)
-            .subscribe(
-                (link) => res.status(200).send({ link }),
-                errorHandler(res),
-        );
+        downloadProfile(res, req.user.id);
     },
 );
 
@@ -148,6 +153,21 @@ router.patch(
         ).subscribe(completionHandler(res));
     },
 );
+
+function downloadProfile(res: Response, userID: number) {
+    let imagePath: string;
+    FileManager
+        .getInstance()
+        .downloadProfile(userID)
+        .subscribe(
+            (path) => {
+                imagePath = join(__dirname, "../../../../", path);
+                res.sendFile(imagePath);
+            },
+            errorHandler(res),
+            () => FileManager.cleanUp(res, imagePath),
+    );
+}
 
 // router.post(
 //     "/register",

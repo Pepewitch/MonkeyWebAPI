@@ -15,11 +15,10 @@ router.post(
     body("regStatus").isIn(Object.keys(RegStatus)),
     validateRequest,
     (req, res) => {
-        ClassReg.getInstance().add(
-            req.body.studentID,
-            req.body.classID,
-            req.body.regStatus,
-        ).subscribe(completionHandler(res));
+        ClassReg
+            .getInstance()
+            .add(req.body.studentID, req.body.classID, req.body.regStatus)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -29,8 +28,10 @@ router.delete(
     param("classRegID").isInt(),
     validateRequest,
     (req, res) => {
-        ClassReg.getInstance().delete(req.params.classRegID,
-        ).subscribe(completionHandler(res));
+        ClassReg
+            .getInstance()
+            .delete(req.params.classRegID)
+            .subscribe(completionHandler(res));
     },
 );
 
@@ -41,9 +42,9 @@ router.patch(
     body("regStatus").isIn(Object.keys(RegStatus)),
     validateRequest,
     (req, res) => {
-        ClassReg.getInstance().edit(
-            req.params.classRegID,
-            req.body.RegStatus,
-        ).subscribe(completionHandler(res));
+        ClassReg
+            .getInstance()
+            .edit(req.params.classRegID, req.body.RegStatus)
+            .subscribe(completionHandler(res));
     },
 );

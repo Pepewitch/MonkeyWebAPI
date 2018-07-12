@@ -7,3 +7,7 @@ export const submissionDocuments = multer({
 export const userProfile = multer({
     storage: multer.diskStorage({}),
 }).single("profile");
+
+export const receipt = multer({
+    storage: multer.diskStorage({}),
+}).single("receipt");
