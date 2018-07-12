@@ -5,6 +5,7 @@ export enum SubmissionState {
     accepted = "accepted",
     rejected = "rejected",
     pending = "pending",
+    empty = "empty",
 }
 
 export interface ISubmissionModel {
@@ -12,6 +13,7 @@ export interface ISubmissionModel {
     ClassID: number;
     SubmissionState: string;
     SubmissionTimes: number;
+    SubmissionName?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -42,6 +44,10 @@ export function submissionModel(sequalize: Sequelize.Sequelize) {
         SubmissionTimes: {
             type: Sequelize.INTEGER,
             allowNull: false,
+        },
+        SubmissionName: {
+            type: Sequelize.STRING,
+            allowNull: true,
         },
     };
 
