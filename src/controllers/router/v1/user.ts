@@ -161,7 +161,6 @@ function downloadProfile(res: Response, userID: number) {
         .downloadProfile(userID)
         .subscribe(
             (path) => {
-                console.log(path);
                 imagePath = join(__dirname, "../../../../", path);
                 res.sendFile(imagePath);
             },

@@ -36,18 +36,32 @@ export class FileManager {
     }
 
     public uploadProfile(userID: number, file: Express.Multer.File): Observable<[File]> {
-        return from(this.bucket.upload(file.path, {
-            destination: `profile-${userID}.png`,
-        })).pipe(
-            map((result) => {
-                removeSync(file.path);
-                return result;
-            }),
-        );
+        return this.upload(`profile-${userID}.png`, file.path);
     }
 
     public downloadProfile(userID: number): Observable<string> {
-        const path = `profile-${userID}.png`;
+        return this.download(`profile-${userID}.png`);
+    }
+
+    public uploadReceipt(id: number, file: Express.Multer.File): Observable<[File]> {
+        return this.upload(`receipt-${id}.png`, file.path);
+    }
+
+    public downloadReceipt(id: number): Observable<string> {
+        return this.download(`receipt-${id}.png`);
+    }
+
+    private upload(destination: string, path: string): Observable<[File]> {
+        return from(this.bucket.upload(path, { destination }))
+            .pipe(
+                map((result) => {
+                    removeSync(path);
+                    return result;
+                }),
+        );
+    }
+
+    private download(path: string): Observable<string> {
         return from(
             this.bucket
                 .file(path)
@@ -57,5 +71,4 @@ export class FileManager {
                     map((_) => join("tmp", path)),
         );
     }
-
 }
