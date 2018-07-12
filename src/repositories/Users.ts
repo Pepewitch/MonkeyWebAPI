@@ -4,6 +4,7 @@ import { Connection } from "../models/Connection";
 import { IUserModel, UserInstance, userModel, UserPosition, UserStatus } from "../models/v1/users";
 import { SequelizeModel } from "./SequelizeModel";
 import { Crypto } from "./util/crypto";
+import { partialOf } from "./util/ObjectMapper";
 
 export class User extends SequelizeModel<UserInstance, IUserModel> {
 
@@ -64,43 +65,14 @@ export class User extends SequelizeModel<UserInstance, IUserModel> {
     }
 
     public edit(ID: number, value: Partial<IUserModel>): Observable<number> {
-        let updateValue = {} as Partial<IUserModel>;
-        if (value.Firstname) {
-            updateValue = { ...updateValue, Firstname: value.Firstname };
-        }
-        if (value.Lastname) {
-            updateValue = { ...updateValue, Lastname: value.Lastname };
-        }
-        if (value.Nickname) {
-            updateValue = { ...updateValue, Nickname: value.Nickname };
-        }
-        if (value.FirstnameEn) {
-            updateValue = { ...updateValue, FirstnameEn: value.FirstnameEn };
-        }
-        if (value.LastnameEn) {
-            updateValue = { ...updateValue, LastnameEn: value.LastnameEn };
-        }
-        if (value.NicknameEn) {
-            updateValue = { ...updateValue, NicknameEn: value.NicknameEn };
-        }
-        if (value.Email) {
-            updateValue = { ...updateValue, Email: value.Email };
-        }
-        if (value.Phone) {
-            updateValue = { ...updateValue, Phone: value.Phone };
-        }
+        let updateValue = partialOf<IUserModel>(value);
         if (value.UserPassword) {
             updateValue = {
                 ...updateValue,
                 UserPassword: Crypto.encrypt(value.UserPassword),
             };
         }
-        if (value.UserStatus) {
-            updateValue = { ...updateValue, UserStatus: value.UserStatus };
-        }
-        if (value.Position) {
-            updateValue = { ...updateValue, Position: value.Position };
-        }
+        console.log(updateValue);
         return from(this.model.update(updateValue, { where: { ID } })).pipe(
             map((result) => result[0]),
         );
