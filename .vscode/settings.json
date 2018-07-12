@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
-        "monkeywebapi"
+        "Firstname",
+        "Lastname",
+        "fieldname",
+        "monkeywebapi",
+        "sequalize"
     ]
 }

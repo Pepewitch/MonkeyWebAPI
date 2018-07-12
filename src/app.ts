@@ -3,9 +3,23 @@ import dotenv from "dotenv";
 import express, { urlencoded } from "express";
 import expressValidator from "express-validator";
 import morgan from "morgan";
+import { router } from "./controllers/router";
 import logger from "./util/logger";
 
 dotenv.config({ path: ".env" });
+
+// Declare property to contain authorization token
+// tslint:disable:interface-name
+declare global {
+    namespace Express {
+        interface Request {
+            authToken?: string;
+            user?: {
+                id: number,
+            };
+        }
+    }
+}
 
 const app = express();
 
@@ -27,5 +41,14 @@ app.use(morgan("dev", {
         },
     },
 }));
+
+app.use((req, res, next) => {
+    // Allow access from other domain
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
+    next();
+});
+
+app.use(router);
 
 export default app;
