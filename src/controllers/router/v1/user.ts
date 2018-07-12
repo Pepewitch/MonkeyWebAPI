@@ -116,10 +116,10 @@ router.post(
     },
 );
 
-router.post(
-    "/edit",
+router.patch(
+    "/:userID",
     authenticateRequest,
-    body("userID").isInt(),
+    param("userID").isInt(),
     oneOf([
         body("firstname").isString(),
         body("lastname").isString(),
@@ -133,7 +133,7 @@ router.post(
     ]),
     (req, res) => {
         User.getInstance().edit(
-            req.body.userID,
+            req.params.userID,
             {
                 Email: req.body.email,
                 Firstname: req.body.firstname,

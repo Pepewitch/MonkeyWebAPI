@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body } from "express-validator/check";
 import { User } from "../../repositories/Users";
 import { JWTAuth } from "../auth/JWTAuth";
-import { authenticateRequest, validateRequest } from "./util/requestValidator";
+import { authenticateRequest, errorHandler, validateRequest } from "./util/requestValidator";
 import { router as v1 } from "./v1";
 
 export const router = Router();
@@ -39,10 +39,12 @@ router.post(
                 if (verify) {
                     res.status(200).send(JWTAuth.getAllToken(req.body.userID));
                 } else {
-                    res.sendStatus(401);
+                    res.status(401).send({
+                        error: "Wrong username or password",
+                    });
                 }
             },
-            (error) => res.status(500).send({ error }),
+            errorHandler(res),
         );
     },
 );
