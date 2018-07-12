@@ -1,4 +1,5 @@
 import Sequelize from "sequelize";
+import { Visibility } from "../util/context";
 import { classModel } from "./class";
 import { userModel } from "./users";
 
@@ -8,11 +9,12 @@ export enum AttendanceType {
 }
 
 export interface IAttendanceModel {
-    ID: number;
+    ID?: number;
     StudentID: number;
     ClassID: number;
     AttendanceDate: Date;
     AttendanceType: AttendanceType;
+    Visibility: Visibility;
     Reason?: string;
     Remark?: string;
     Sender?: string;
@@ -54,6 +56,11 @@ export function attendanceModel(sequalize: Sequelize.Sequelize) {
         AttendanceType: {
             type: Sequelize.STRING(10),
             allowNull: false,
+        },
+        Visibility: {
+            type: Sequelize.STRING(10),
+            allowNull: false,
+            defaultValue: Visibility.show,
         },
         Reason: {
             type: Sequelize.STRING,

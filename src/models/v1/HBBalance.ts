@@ -1,7 +1,7 @@
 import Sequelize from "sequelize";
 import { classLogModel } from "./classLog";
 
-export interface IHBBalaceModel {
+export interface IHBBalanceModel {
     ID: number;
     HBTransaction: number;
     ClassLogID?: number;
@@ -9,11 +9,11 @@ export interface IHBBalaceModel {
     updatedAt?: Date;
 }
 
-export type HBBalaceInstance = Sequelize.Instance<IHBBalaceModel> & IHBBalaceModel;
+export type HBBalanceInstance = Sequelize.Instance<IHBBalanceModel> & IHBBalanceModel;
 
 // tslint:disable:object-literal-sort-keys
-export function hbBalaceModel(sequalize: Sequelize.Sequelize) {
-    const attributes: SequelizeAttributes<IHBBalaceModel> = {
+export function hbBalanceModel(sequalize: Sequelize.Sequelize) {
+    const attributes: SequelizeAttributes<IHBBalanceModel> = {
         ID: {
             type: Sequelize.INTEGER,
             allowNull: false,
@@ -34,7 +34,7 @@ export function hbBalaceModel(sequalize: Sequelize.Sequelize) {
         },
     };
 
-    return sequalize.define<HBBalaceInstance, IHBBalaceModel>("HBBalance", attributes, {
+    return sequalize.define<HBBalanceInstance, IHBBalanceModel>("HBBalance", attributes, {
         tableName: "HBBalance",
     });
 }

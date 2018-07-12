@@ -6,6 +6,20 @@ import { ISubmissionChatModel, SubmissionChatInstance, submissionChatModel } fro
 import { SequelizeModel } from "./SequelizeModel";
 import { partialOf } from "./util/ObjectMapper";
 
+interface ISubmissionChatResult {
+    from: string;
+    fromID: number;
+    message: string;
+    timestamp: Date;
+}
+
+interface ISubmissionChatQuery {
+    SenderID: number;
+    createdAt: Date;
+    ChatMessage: string;
+    NicknameEn: string;
+}
+
 export class SubmissionChat extends SequelizeModel<SubmissionChatInstance, ISubmissionChatModel> {
 
     public static getInstance(): SubmissionChat {
@@ -45,25 +59,27 @@ export class SubmissionChat extends SequelizeModel<SubmissionChatInstance, ISubm
                 map((result) => result[0]),
         );
     }
-    // form: string,
-    // fromID: number,
-    // message: string,
-    // timestamp: Date,
+
+    public show(
+        ID: number,
+    ): Observable<number> {
+        return this.edit(ID, {
+            Visibility: Type.show,
+        });
+    }
+
+    public hide(
+        ID: number,
+    ): Observable<number> {
+        return this.edit(ID, {
+            Visibility: Type.hide,
+        });
+    }
 
     public list(
         ID: number,
-    ): Observable<Array<{
-        from: string,
-        fromID: number,
-        message: string,
-        timestamp: Date,
-    }>> {
-        return Connection.getInstance().select<{
-            SenderID: number,
-            createdAt: Date,
-            ChatMessage: string,
-            NicknameEn: string,
-        }>(
+    ): Observable<ISubmissionChatResult[]> {
+        return Connection.getInstance().select<ISubmissionChatQuery>(
             `SELECT
                 SubmissionChat.SenderID,
                 SubmissionChat.createdAt,
@@ -74,7 +90,8 @@ export class SubmissionChat extends SequelizeModel<SubmissionChatInstance, ISubm
                     JOIN
                 Users ON SubmissionChat.SenderID = Users.ID
             WHERE
-                SubmissionChat.SubmissionID = :ID`, {
+                SubmissionChat.SubmissionID = :ID
+                AND SubmissionChat.Visibility = 'show'`, {
                 replacements: { ID },
             },
         ).pipe(
