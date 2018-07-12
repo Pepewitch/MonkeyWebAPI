@@ -19,3 +19,6 @@ coverage/
 
 # Key storage
 key/
+
+# Temp file storage
+tmp/

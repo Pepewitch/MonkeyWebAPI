@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { router as attendance } from "./attendance";
 import { router as classRouter } from "./class";
 import { router as quarter } from "./quarter";
 import { router as studentRemark } from "./studentRemark";
@@ -9,6 +10,7 @@ import { router as user } from "./user";
 
 export const router = Router();
 
+router.use("/attendance", attendance);
 router.use("/class", classRouter);
 router.use("/quarter", quarter);
 router.use("/studentRemark", studentRemark);
