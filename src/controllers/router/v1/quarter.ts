@@ -8,18 +8,6 @@ import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandl
 export const router = Router();
 
 router.get(
-    "/",
-    authenticateRequest,
-    query("type").isIn(Object.keys(QuarterType)).optional(),
-    (req, res) => {
-        Quarter.getInstance().list(req.query.type).subscribe(
-            (quarters) => res.status(200).send({ quarters }),
-            errorHandler(res),
-        );
-    },
-);
-
-router.get(
     "/default",
     authenticateRequest,
     query("summer").isBoolean().optional(),
@@ -33,6 +21,19 @@ router.get(
         }
         observable.subscribe(
             (quarter) => res.status(200).send({ quarter }),
+            errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/",
+    authenticateRequest,
+    query("type").isIn(Object.keys(QuarterType)).optional(),
+    validateRequest,
+    (req, res) => {
+        Quarter.getInstance().list(req.query.type).subscribe(
+            (quarters) => res.status(200).send({ quarters }),
             errorHandler(res),
         );
     },
