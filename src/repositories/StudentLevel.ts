@@ -1,4 +1,4 @@
-import { from, Observable } from "rxjs";
+import { from, Observable, of } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { IStudentLevelModel, StudentLevelInstance, studentLevelModel } from "../models/v1/studentLevel";
@@ -22,22 +22,35 @@ export class StudentLevel extends SequelizeModel<StudentLevelInstance, IStudentL
         this.model = studentLevelModel(Connection.getInstance().getConnection());
     }
 
-    public add(
+    public set(
         StudentID: number,
         ClassSubject: string,
         SubLevel: string,
         QuarterID?: number,
     ): Observable<IStudentLevelModel> {
         if (QuarterID) {
-            return from(this.model.create({ StudentID, ClassSubject, SubLevel, QuarterID }));
+            return this.setValue(StudentID, ClassSubject, SubLevel, QuarterID);
         } else {
             return Quarter.getInstance().defaultQuarter().pipe(
-                flatMap((quarter) => from(
-                    this.model.create({ StudentID, ClassSubject, SubLevel, QuarterID: quarter.ID }),
-                )),
+                flatMap((quarter) => this.setValue(StudentID, ClassSubject, SubLevel, quarter.ID)),
             );
         }
     }
+
+    // public get(
+    //     StudentID: number,
+    //     ClassSubject: string,
+    //     QuarterID?: number,
+    // ): Observable<string | null> {
+    //     if (QuarterID) {
+    //         return from(this.model.findOne<IStudentLevelModel>({ where: { StudentID, ClassSubject } }))
+    //             .pipe(
+    //                 map((result) => result.SubLevel),
+    //         );
+    //     } else {
+
+    //     }
+    // }
 
     public delete(
         ID: number,
@@ -52,6 +65,29 @@ export class StudentLevel extends SequelizeModel<StudentLevelInstance, IStudentL
         return from(this.model.update(partialOf<IStudentLevelModel>(value), { where: { ID } }))
             .pipe(
                 map((result) => result[0]),
+        );
+    }
+
+    private setValue(
+        StudentID: number,
+        ClassSubject: string,
+        SubLevel: string,
+        QuarterID: number,
+    ): Observable<IStudentLevelModel> {
+        return from(this.model.findOrCreate(
+            {
+                defaults: { StudentID, ClassSubject, QuarterID, SubLevel },
+                where: { StudentID, ClassSubject },
+            })).pipe(
+                flatMap(([level, created]) => {
+                    if (created) {
+                        return of(level.get({
+                            plain: true,
+                        }));
+                    } else {
+                        return from(level.update("SubLevel", SubLevel));
+                    }
+                }),
         );
     }
 }
