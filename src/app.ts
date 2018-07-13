@@ -11,14 +11,14 @@ dotenv.config({ path: ".env" });
 // Declare property to contain authorization token
 // tslint:disable:interface-name
 declare global {
-  namespace Express {
-    interface Request {
-      authToken?: string;
-      user?: {
-        id: number;
-      };
+    namespace Express {
+        interface Request {
+            authToken?: string;
+            user?: {
+                id: number;
+            };
+        }
     }
-  }
 }
 
 const app = express();
@@ -35,26 +35,26 @@ app.use(expressValidator());
 
 // Logger for express
 app.use(
-  morgan("dev", {
-    stream: {
-      write(text: string) {
-        logger.info(text);
-      }
-    }
-  })
+    morgan("dev", {
+        stream: {
+            write(text: string) {
+                logger.info(text);
+            },
+        },
+    }),
 );
 
 // For development purpose
 if (!prod) {
-  app.use((req, res, next) => {
-    // Allow access from other domain
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, authorization",
-    );
-    next();
-  });
+    app.use((req, res, next) => {
+        // Allow access from other domain
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, Content-Type, Accept, authorization",
+        );
+        next();
+    });
 }
 
 app.use(router);
