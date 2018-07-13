@@ -43,7 +43,12 @@ export class User extends SequelizeModel<UserInstance, IUserModel> {
     }
 
     public getUserInfo(ID: number): Observable<IUserModel> {
-        return from(this.model.findOne<IUserModel>({ where: { ID } }));
+        return from(this.model.findOne<IUserModel>({
+            attributes: {
+                exclude: ["UserPassword"],
+            },
+            where: { ID },
+        }));
     }
 
     public login(ID: number, password: string): Observable<boolean> {
