@@ -3,7 +3,7 @@ import { quarterModel } from "./quarter";
 import { userModel } from "./users";
 
 export interface IStudentLevelModel {
-    ID: number;
+    ID?: number;
     StudentID: number;
     QuarterID: number;
     ClassSubject: string;

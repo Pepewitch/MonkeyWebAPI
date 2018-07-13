@@ -79,10 +79,18 @@ export class StudentStage extends SequelizeModel<StudentStateInstance, IStudentS
 
     private getLatestStudentModelInDefaultQuarter(selectStatement: string, StudentID: number): Observable<IStudentStateModel> {
         return Connection.getInstance().select<IStudentStateModel>(
-            `SELECT TOP(1) ${selectStatement}
-            FROM StudentState
-                JOIN Quarter ON QuarterID = Quarter.ID
-            WHERE StudentID = :StudentID AND StartDate < NOW() AND EndDate > NOW() AND QuarterType = 'normal';`, {
+            `SELECT
+                ${selectStatement}
+            FROM
+                StudentState
+                    JOIN
+                Quarter ON QuarterID = Quarter.ID
+            WHERE
+                StudentID = :StudentID
+                    AND Quarter.StartDate < NOW()
+                    AND Quarter.EndDate > NOW()
+                    AND Quarter.QuarterType = 'normal'
+            LIMIT 1`, {
                 replacements: { StudentID },
             },
         ).pipe(

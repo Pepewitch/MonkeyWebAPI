@@ -12,12 +12,12 @@ router.post(
     authorizeRequestWithoutPosition(UserPosition.tutor, UserPosition.office),
     body("studentID").isInt().optional(),
     body("classID").isInt(),
-    body("regStatus").isIn(Object.keys(RegStatus)),
+    body("regStatus").isIn(Object.keys(RegStatus)).optional(),
     validateRequest,
     (req, res) => {
         ClassReg
             .getInstance()
-            .add(req.body.studentID, req.body.classID, req.body.regStatus)
+            .add(req.body.studentID || req.user.id, req.body.classID, req.body.regStatus || RegStatus.selected)
             .subscribe(completionHandler(res));
     },
 );

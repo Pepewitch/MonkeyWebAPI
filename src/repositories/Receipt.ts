@@ -47,4 +47,17 @@ export class Receipt extends SequelizeModel<ReceiptInstance, IReceiptModel> {
                 map((result) => result[0]),
         );
     }
+
+    public delete(
+        ID: number,
+    ): Observable<number> {
+        return FileManager
+            .getInstance()
+            .deleteReceipt(ID)
+            .pipe(
+                flatMap((_) => {
+                    return from(this.model.destroy({ where: { ID } }));
+                }),
+            );
+    }
 }

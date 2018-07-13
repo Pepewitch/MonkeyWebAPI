@@ -1,4 +1,4 @@
-import Storage, { Bucket, File } from "@google-cloud/storage";
+import Storage, { ApiResponse, Bucket, File } from "@google-cloud/storage";
 import { Response } from "express";
 import { removeSync } from "fs-extra";
 import { join } from "path";
@@ -43,12 +43,20 @@ export class FileManager {
         return this.download(`profile-${userID}.png`);
     }
 
+    public deleteProfile(userID: number): Observable<[ApiResponse]> {
+        return this.delete(`profile-${userID}.png`);
+    }
+
     public uploadReceipt(id: number, file: Express.Multer.File): Observable<[File]> {
         return this.upload(`receipt-${id}.png`, file.path);
     }
 
     public downloadReceipt(id: number): Observable<string> {
         return this.download(`receipt-${id}.png`);
+    }
+
+    public deleteReceipt(id: number): Observable<[ApiResponse]> {
+        return this.delete(`receipt-${id}.png`);
     }
 
     private upload(destination: string, path: string): Observable<[File]> {
@@ -69,6 +77,14 @@ export class FileManager {
                     destination: join("tmp", path),
                 })).pipe(
                     map((_) => join("tmp", path)),
+        );
+    }
+
+    private delete(path: string): Observable<[ApiResponse]> {
+        return from(
+            this.bucket
+                .file(path)
+                .delete(),
         );
     }
 }

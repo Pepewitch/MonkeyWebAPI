@@ -6,18 +6,34 @@ import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeReques
 
 export const router = Router();
 
+// router.get(
+//     "/",
+//     authenticateRequest,
+//     query("type").isIn(Object.keys(ClassType)).optional(),
+//     query("quarterID").isInt().optional(),
+//     validateRequest,
+//     (req, res) => {
+//         Class
+//             .getInstance()
+//             .list(req.body.type, req.body.quarterID)
+//             .subscribe(
+//                 (classes) => res.status(200).send({ classes }),
+//                 errorHandler(res),
+//         );
+//     },
+// );
+
 router.get(
-    "/",
-    authenticateRequest,
-    query("type").isIn(Object.keys(ClassType)).optional(),
-    query("quarterID").isInt().optional(),
+    "/info/:classID",
+    authorizeRequestWithTutorPosition,
+    param("classID").isInt(),
     validateRequest,
     (req, res) => {
         Class
             .getInstance()
-            .list(req.body.type, req.body.quarterID)
+            .info(req.params.classID)
             .subscribe(
-                (classes) => res.status(200).send({ classes }),
+                (info) => res.status(200).send({ info }),
                 errorHandler(res),
         );
     },
