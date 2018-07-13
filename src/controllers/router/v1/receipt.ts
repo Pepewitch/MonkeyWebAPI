@@ -6,7 +6,7 @@ import { UserPosition } from "../../../models/v1/users";
 import { FileManager } from "../../../repositories/FileManager";
 import { Receipt } from "../../../repositories/Receipt";
 import { receipt } from "../util/fileHandler";
-import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithoutPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
+import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithoutPosition, authorizeRequestWithPosition, completionHandler, errorHandler, validateFile, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
@@ -67,5 +67,18 @@ router.patch(
                     Visibility: req.body.visibility,
                 },
         ).subscribe(completionHandler(res));
+    },
+);
+
+router.delete(
+    "/:receiptID",
+    authorizeRequestWithPosition(UserPosition.dev),
+    param("receiptID").isInt(),
+    validateRequest,
+    (req, res) => {
+        Receipt
+            .getInstance()
+            .delete(req.params.receiptID)
+            .subscribe(completionHandler(res));
     },
 );
