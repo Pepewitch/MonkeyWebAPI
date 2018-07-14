@@ -5,6 +5,13 @@ import { IQuarterModel, QuarterInstance, quarterModel, QuarterType as Type } fro
 import { SequelizeModel } from "./SequelizeModel";
 import { partialOf } from "./util/ObjectMapper";
 
+export interface IQuarterResult {
+    ID: number;
+    name: string;
+    startDate: Date;
+    endDate: Date;
+}
+
 export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
 
     public static getInstance(): Quarter {
@@ -33,9 +40,9 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
 
     public defaultQuarter(
         type = Type.normal,
-    ): Observable<IQuarterModel> {
+    ): Observable<IQuarterResult> {
         return Connection.getInstance().select<IQuarterModel>(
-            `SELECT * FROM Quarter WHERE StartDate < NOW() AND EndDate > NOW() AND QuarterType = :type`,
+            `SELECT * FROM Quarter WHERE StartDate <= DATE(NOW()) AND EndDate >= DATE(NOW()) AND QuarterType = :type`,
             {
                 replacements: { type },
             },
@@ -44,16 +51,22 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
                 if (result.length === 0) {
                     throw new Error("Default quarter not found");
                 }
-                return result[0];
+                return this.mapResult(result[0]);
             }),
         );
     }
 
-    public list(QuarterType?: Type): Observable<IQuarterModel[]> {
+    public list(QuarterType?: Type): Observable<IQuarterResult[]> {
         if (QuarterType) {
-            return from(this.model.findAll({ where: { QuarterType }, raw: true }));
+            return from(this.model.findAll({ where: { QuarterType }, raw: true }))
+                .pipe(
+                    map((results) => results.map(this.mapResult)),
+            );
         } else {
-            return from(this.model.findAll({ raw: true }));
+            return from(this.model.findAll({ raw: true }))
+                .pipe(
+                    map((results) => results.map(this.mapResult)),
+            );
         }
     }
 
@@ -71,5 +84,14 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
             .pipe(
                 map((quarter) => quarter[0]),
         );
+    }
+
+    private mapResult(quarter: IQuarterModel): IQuarterResult {
+        return {
+            ID: quarter.ID,
+            endDate: quarter.EndDate,
+            name: quarter.QuarterName,
+            startDate: quarter.StartDate,
+        };
     }
 }
