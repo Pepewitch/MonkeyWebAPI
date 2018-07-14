@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { body, oneOf, param, query } from "express-validator/check";
 import { Observable } from "rxjs";
-import { IQuarterModel, QuarterType } from "../../../models/v1/quarter";
-import { Quarter } from "../../../repositories/Quarter";
+import { QuarterType } from "../../../models/v1/quarter";
+import { IQuarterResult, Quarter } from "../../../repositories/Quarter";
 import { authenticateRequest, authorizeRequestWithAdminPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
@@ -13,7 +13,7 @@ router.get(
     query("summer").isBoolean().optional(),
     validateRequest,
     (req, res) => {
-        let observable: Observable<IQuarterModel | null>;
+        let observable: Observable<IQuarterResult | null>;
         if (req.query.summer === "true") {
             observable = Quarter.getInstance().defaultQuarter(QuarterType.summer);
         } else {

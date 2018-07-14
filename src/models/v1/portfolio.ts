@@ -1,5 +1,5 @@
 import Sequelize from "sequelize";
-import { hbSheetModel } from "./hbSheet";
+import { hbSheetModel } from "./HBSheet";
 import { userModel } from "./users";
 
 export interface IPortfolioModel {
