@@ -3,7 +3,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { ClassInstance, classModel, ClassType as Type, IClassModel } from "../models/v1/class";
-import { ClassCard } from "../types/ClassCard";
+import { SubmissionState } from "../models/v1/submission";
 import { SequelizeModel } from "./SequelizeModel";
 import { partialOf } from "./util/ObjectMapper";
 
@@ -17,6 +17,17 @@ interface ISubmissionQuery {
     ClassDate: Date;
     RoomName: string;
     StudentCount: number;
+}
+
+interface ISubmissionResult {
+    ID: number;
+    title: string;
+    maxSubmission: number;
+    submissions: Array<{ status: string, count: number }>;
+    subject: string;
+    date: Date;
+    student: number;
+    room: string;
 }
 
 interface IInfoQuery {
@@ -144,7 +155,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
     public getSubmission(
         TutorID: number,
-    ): Observable<ClassCard[]> {
+    ): Observable<ISubmissionResult[]> {
         return Connection.getInstance().select<ISubmissionQuery>(
             `SELECT
                 Class.ID,
@@ -179,27 +190,39 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
             },
         ).pipe(
             map((classes) => {
-                // TODO: Fill submission array
-                const groupedClasses: ClassCard[] = [];
+                const groupedClasses: ISubmissionResult[] = [];
                 for (const classDetail of classes) {
                     const index = _.findIndex(groupedClasses, (o) => o.ID === classDetail.ID);
                     if (index !== -1) {
-                        groupedClasses[index].addSubmission({ status: classDetail.SubmissionState, count: classDetail.SubmissionTimes });
+                        groupedClasses[index].submissions.push({ status: classDetail.SubmissionState, count: classDetail.SubmissionTimes });
                     } else {
                         const submission: Array<{ status: string, count: number }> = [];
                         if (classDetail.SubmissionState !== null && classDetail.SubmissionTimes !== null) {
                             submission.push({ status: classDetail.SubmissionState, count: classDetail.SubmissionTimes });
                         }
-                        groupedClasses.push(new ClassCard(
-                            classDetail.ID,
-                            classDetail.ClassName,
-                            classDetail.ClassTimes,
-                            submission,
-                            classDetail.ClassSubject,
-                            classDetail.ClassDate,
-                            classDetail.StudentCount,
-                            classDetail.RoomName,
-                        ));
+                        groupedClasses.push({
+                            ID: classDetail.ID,
+                            date: classDetail.ClassDate,
+                            maxSubmission: classDetail.ClassTimes,
+                            room: classDetail.RoomName,
+                            student: classDetail.StudentCount,
+                            subject: classDetail.ClassSubject,
+                            submissions: submission,
+                            title: classDetail.ClassName,
+                        });
+                    }
+                }
+                for (const eachClass of groupedClasses) {
+                    if (eachClass.maxSubmission !== null) {
+                        for (let i = 0; i < eachClass.maxSubmission; i++) {
+                            if (_.findIndex(eachClass.submissions, (o) => o.count === i + 1) === -1) {
+                                eachClass.submissions.push({
+                                    count: i + 1,
+                                    status: SubmissionState.empty,
+                                });
+                            }
+                        }
+                        eachClass.submissions.sort((a, b) => a.count - b.count);
                     }
                 }
                 return groupedClasses;

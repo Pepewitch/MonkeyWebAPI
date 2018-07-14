@@ -7,22 +7,6 @@ import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeReques
 export const router = Router();
 
 router.get(
-    "/:classID",
-    authorizeRequestWithTutorPosition,
-    param("classID").isInt(),
-    validateRequest,
-    (req, res) => {
-        Class
-            .getInstance()
-            .info(req.params.classID)
-            .subscribe(
-                (info) => res.status(200).send({ info }),
-                errorHandler(res),
-        );
-    },
-);
-
-router.get(
     "/submission",
     authorizeRequestWithTutorPosition,
     query("tutorID").isInt().optional(),
@@ -33,6 +17,22 @@ router.get(
             .getSubmission(req.query.tutorID || req.user.id)
             .subscribe(
                 (classes) => res.status(200).send({ classes }),
+                errorHandler(res),
+        );
+    },
+);
+
+router.get(
+    "/:classID",
+    authorizeRequestWithTutorPosition,
+    param("classID").isInt(),
+    validateRequest,
+    (req, res) => {
+        Class
+            .getInstance()
+            .info(req.params.classID)
+            .subscribe(
+                (info) => res.status(200).send({ info }),
                 errorHandler(res),
         );
     },
