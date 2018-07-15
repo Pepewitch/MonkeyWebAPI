@@ -3,7 +3,7 @@ import { tutorLogIntervalModel } from "./tutorLogInterval";
 import { userModel } from "./users";
 
 export interface ITutorLogMultiplierModel {
-    ID: number;
+    ID?: number;
     UserID: number;
     TutorLogIntervalID: number;
     Multiplier: number;

@@ -2,7 +2,7 @@ import Sequelize from "sequelize";
 import { userModel } from "./users";
 
 export interface ITutorLogModel {
-    ID: number;
+    ID?: number;
     UserID: number;
     TutorLogDate?: Date;
     CheckIn?: Date;

@@ -8,7 +8,7 @@ export enum TutorLogStatus {
 }
 
 export interface ITutorLogStatusModel {
-    ID: number;
+    ID?: number;
     UserID: number;
     TutorLogIntervalID: number;
     TutorLogStatus: TutorLogStatus;
