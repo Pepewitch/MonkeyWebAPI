@@ -12,7 +12,7 @@ export enum DetailType {
 }
 
 export interface ITutorLogDetailModel {
-    ID: number;
+    ID?: number;
     TutorLogID: number;
     DetailType: DetailType;
     createdAt?: Date;

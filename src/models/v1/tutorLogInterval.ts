@@ -1,7 +1,7 @@
 import Sequelize from "sequelize";
 
 export interface ITutorLogIntervalModel {
-    ID: number;
+    ID?: number;
     IntervalName: string;
     StartDate: Date;
     EndDate?: Date;
