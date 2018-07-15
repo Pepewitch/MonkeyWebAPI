@@ -67,6 +67,7 @@ interface IListQuery {
     ClassSubject: string;
     ClassType: Type;
     StudentCount: number;
+    Grade: string;
 }
 
 interface IListResult {
@@ -80,6 +81,7 @@ interface IListResult {
     subject: string;
     type: Type;
     tutorID: number;
+    grade: string;
 }
 export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
@@ -134,6 +136,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
             Room.MaxSeat,
             Class.ClassSubject,
             Class.ClassType,
+            Class.Grade,
             (SELECT
                     COUNT(id)
                 FROM
@@ -173,7 +176,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
         return Connection.getInstance().select<IListQuery>(statement, { replacements })
             .pipe(
                 map((results) => results.map((result) => {
-                    return {
+                    const resultObject = {
                         ID: result.ID,
                         date: result.ClassDate,
                         maxStudent: result.MaxSeat,
@@ -185,6 +188,11 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
                         tutorID: result.TutorID,
                         type: result.ClassType,
                     };
+                    if (result.ClassType === Type.course) {
+                        return { ...resultObject, grade: result.Grade || "" };
+                    } else {
+                        return { ...resultObject, grade: result.Grade || "3,4,5,6,7,8,9,10,11,12" };
+                    }
                 })),
         );
     }
