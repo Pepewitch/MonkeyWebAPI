@@ -22,6 +22,7 @@ export interface IClassModel {
     Suggestion?: string;
     ClassTimes?: number;
     ClassType: ClassType;
+    Price?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -92,6 +93,10 @@ export function classModel(sequalize: Sequelize.Sequelize) {
         ClassType: {
             type: Sequelize.STRING(20),
             allowNull: false,
+        },
+        Price: {
+            type: Sequelize.INTEGER,
+            allowNull: true,
         },
     };
 

@@ -56,6 +56,31 @@ interface IInfoResult {
     }>;
 }
 
+interface IListQuery {
+    ID: number;
+    ClassName: string;
+    TutorID: number;
+    ClassDate: Date;
+    NicknameEn: string;
+    RoomName: string;
+    MaxSeat: number;
+    ClassSubject: string;
+    ClassType: Type;
+    StudentCount: number;
+}
+
+interface IListResult {
+    ID: number;
+    name: string;
+    tutor: string;
+    date: Date;
+    room: string;
+    student: number;
+    maxStudent: number;
+    subject: string;
+    type: Type;
+    tutorID: number;
+}
 export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
     public static getInstance(): Class {
@@ -77,64 +102,91 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
         QuarterID: number,
         ClassDate: Date,
         ClassSubject: string,
-        TutorID: number,
         ClassType: Type,
+        Price?: number,
+        TutorID?: number,
     ): Observable<IClassModel> {
-        return from(this.model.create({
-            ClassDate,
-            ClassName,
-            ClassSubject,
-            ClassType,
-            QuarterID,
-            TutorID,
-        }));
-    }
-
-    public addWithoutTutor(
-        ClassName: string,
-        QuarterID: number,
-        ClassDate: Date,
-        ClassSubject: string,
-        ClassType: Type,
-    ): Observable<IClassModel> {
-        return from(this.model.create({
-            ClassDate,
-            ClassName,
-            ClassSubject,
-            ClassType,
-            QuarterID,
-        }));
+        let addObject: IClassModel = {
+            ClassDate, ClassName, ClassSubject, ClassType, QuarterID,
+        };
+        if (TutorID) {
+            addObject = { ...addObject, TutorID };
+        }
+        if (Price) {
+            addObject = { ...addObject, Price };
+        }
+        return from(this.model.create(addObject));
     }
 
     public list(
         ClassType?: Type,
         QuarterID?: number,
-    ): Observable<IClassModel[]> {
+    ): Observable<IListResult[]> {
+        let replacements: any;
+        let statement =
+            `SELECT
+            Class.ID,
+            Class.ClassName,
+            Class.TutorID,
+            Class.ClassDate,
+            Users.NicknameEn,
+            Room.RoomName,
+            Room.MaxSeat,
+            Class.ClassSubject,
+            Class.ClassType,
+            (SELECT
+                    COUNT(id)
+                FROM
+                    ClassReg
+                WHERE
+                    ClassReg.ClassID = Class.ID
+                        AND (ClassReg.RegStatus = 'selected'
+                        OR ClassReg.RegStatus = 'registered')) AS StudentCount
+        FROM
+            Class
+                LEFT JOIN
+            Users ON Class.TutorID = Users.ID
+                LEFT JOIN
+            Room ON Class.RoomID = Room.ID `;
         if (QuarterID) {
             if (ClassType) {
-                return from(this.model.findAll({ where: { ClassType, QuarterID } }));
+                statement += `WHERE Class.QuarterID = :QuarterID AND Class.ClassType = :ClassType`;
+                replacements = { QuarterID, ClassType };
             } else {
-                return from(this.model.findAll({ where: { QuarterID } }));
+                statement += `WHERE Class.QuarterID = :QuarterID`;
+                replacements = { QuarterID };
             }
         } else {
             if (ClassType) {
-                return Connection.getInstance().select<IClassModel>(
-                    `SELECT *
-                    FROM Class
-                        JOIN Quarter ON Class.QuarterID = Quarter.ID
-                    WHERE Quarter.StartDate < NOW() AND Quarter.EndDate > NOW() AND Class.ClassType = :ClassType`, {
-                        replacements: { ClassType },
-                    },
-                );
+                statement += `WHERE Class.ClassType = :ClassType`;
+                replacements = { ClassType };
             } else {
-                return Connection.getInstance().select<IClassModel>(
-                    `SELECT *
-                    FROM Class
-                        JOIN Quarter ON Class.QuarterID = Quarter.ID
-                    WHERE Quarter.StartDate < NOW() AND Quarter.EndDate > NOW()`,
-                );
+                statement +=
+                    `LEFT JOIN Quarter ON Class.QuarterID = Quarter.ID
+                WHERE
+                    Quarter.StartDate <= DATE(NOW())
+                        AND Quarter.EndDate >= DATE(NOW())
+                        AND Quarter.QuarterType = 'normal'`;
+                replacements = {};
             }
         }
+        return Connection.getInstance().select<IListQuery>(statement, { replacements })
+            .pipe(
+                map((results) => results.map((result) => {
+                    return {
+                        ID: result.ID,
+                        date: result.ClassDate,
+                        maxStudent: result.MaxSeat,
+                        name: result.ClassName,
+                        room: result.RoomName,
+                        student: result.StudentCount,
+                        subject: result.ClassSubject,
+                        tutor: result.NicknameEn,
+                        tutorID: result.TutorID,
+                        type: result.ClassType,
+                    };
+                })),
+        );
     }
 
     public delete(
@@ -186,7 +238,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
                 Quarter.StartDate < NOW()
                     AND Quarter.EndDate > NOW()
                     AND Class.TutorID = :TutorID`, {
-                replacements: { TutorID: 99023 },
+                replacements: { TutorID },
             },
         ).pipe(
             map((classes) => {
