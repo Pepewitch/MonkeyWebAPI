@@ -176,10 +176,9 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
         return Connection.getInstance().select<IListQuery>(statement, { replacements })
             .pipe(
                 map((results) => results.map((result) => {
-                    return {
+                    const resultObject = {
                         ID: result.ID,
                         date: result.ClassDate,
-                        grade: result.Grade || "",
                         maxStudent: result.MaxSeat,
                         name: result.ClassName,
                         room: result.RoomName,
@@ -189,6 +188,11 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
                         tutorID: result.TutorID,
                         type: result.ClassType,
                     };
+                    if (result.ClassType === Type.course) {
+                        return { ...resultObject, grade: result.Grade || "" };
+                    } else {
+                        return { ...resultObject, grade: result.Grade || "3,4,5,6,7,8,9,10,11,12" };
+                    }
                 })),
         );
     }
