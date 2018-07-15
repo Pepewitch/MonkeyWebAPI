@@ -67,6 +67,7 @@ interface IListQuery {
     ClassSubject: string;
     ClassType: Type;
     StudentCount: number;
+    Grade: string;
 }
 
 interface IListResult {
@@ -80,6 +81,7 @@ interface IListResult {
     subject: string;
     type: Type;
     tutorID: number;
+    grade: string;
 }
 export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
@@ -134,6 +136,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
             Room.MaxSeat,
             Class.ClassSubject,
             Class.ClassType,
+            Class.Grade,
             (SELECT
                     COUNT(id)
                 FROM
@@ -176,6 +179,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
                     return {
                         ID: result.ID,
                         date: result.ClassDate,
+                        grade: result.Grade || "",
                         maxStudent: result.MaxSeat,
                         name: result.ClassName,
                         room: result.RoomName,
