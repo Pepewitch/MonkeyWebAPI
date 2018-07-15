@@ -3,7 +3,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
 import { ClassInstance, classModel, ClassType as Type, IClassModel } from "../models/v1/class";
-import { ClassCard } from "../types/ClassCard";
+import { SubmissionState } from "../models/v1/submission";
 import { SequelizeModel } from "./SequelizeModel";
 import { partialOf } from "./util/ObjectMapper";
 
@@ -17,6 +17,17 @@ interface ISubmissionQuery {
     ClassDate: Date;
     RoomName: string;
     StudentCount: number;
+}
+
+interface ISubmissionResult {
+    ID: number;
+    title: string;
+    maxSubmission: number;
+    submissions: Array<{ status: string, count: number }>;
+    subject: string;
+    date: Date;
+    student: number;
+    room: string;
 }
 
 interface IInfoQuery {
@@ -45,6 +56,31 @@ interface IInfoResult {
     }>;
 }
 
+interface IListQuery {
+    ID: number;
+    ClassName: string;
+    TutorID: number;
+    ClassDate: Date;
+    NicknameEn: string;
+    RoomName: string;
+    MaxSeat: number;
+    ClassSubject: string;
+    ClassType: Type;
+    StudentCount: number;
+}
+
+interface IListResult {
+    ID: number;
+    name: string;
+    tutor: string;
+    date: Date;
+    room: string;
+    student: number;
+    maxStudent: number;
+    subject: string;
+    type: Type;
+    tutorID: number;
+}
 export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
     public static getInstance(): Class {
@@ -66,64 +102,91 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
         QuarterID: number,
         ClassDate: Date,
         ClassSubject: string,
-        TutorID: number,
         ClassType: Type,
+        Price?: number,
+        TutorID?: number,
     ): Observable<IClassModel> {
-        return from(this.model.create({
-            ClassDate,
-            ClassName,
-            ClassSubject,
-            ClassType,
-            QuarterID,
-            TutorID,
-        }));
-    }
-
-    public addWithoutTutor(
-        ClassName: string,
-        QuarterID: number,
-        ClassDate: Date,
-        ClassSubject: string,
-        ClassType: Type,
-    ): Observable<IClassModel> {
-        return from(this.model.create({
-            ClassDate,
-            ClassName,
-            ClassSubject,
-            ClassType,
-            QuarterID,
-        }));
+        let addObject: IClassModel = {
+            ClassDate, ClassName, ClassSubject, ClassType, QuarterID,
+        };
+        if (TutorID) {
+            addObject = { ...addObject, TutorID };
+        }
+        if (Price) {
+            addObject = { ...addObject, Price };
+        }
+        return from(this.model.create(addObject));
     }
 
     public list(
         ClassType?: Type,
         QuarterID?: number,
-    ): Observable<IClassModel[]> {
+    ): Observable<IListResult[]> {
+        let replacements: any;
+        let statement =
+            `SELECT
+            Class.ID,
+            Class.ClassName,
+            Class.TutorID,
+            Class.ClassDate,
+            Users.NicknameEn,
+            Room.RoomName,
+            Room.MaxSeat,
+            Class.ClassSubject,
+            Class.ClassType,
+            (SELECT
+                    COUNT(id)
+                FROM
+                    ClassReg
+                WHERE
+                    ClassReg.ClassID = Class.ID
+                        AND (ClassReg.RegStatus = 'selected'
+                        OR ClassReg.RegStatus = 'registered')) AS StudentCount
+        FROM
+            Class
+                LEFT JOIN
+            Users ON Class.TutorID = Users.ID
+                LEFT JOIN
+            Room ON Class.RoomID = Room.ID `;
         if (QuarterID) {
             if (ClassType) {
-                return from(this.model.findAll({ where: { ClassType, QuarterID } }));
+                statement += `WHERE Class.QuarterID = :QuarterID AND Class.ClassType = :ClassType`;
+                replacements = { QuarterID, ClassType };
             } else {
-                return from(this.model.findAll({ where: { QuarterID } }));
+                statement += `WHERE Class.QuarterID = :QuarterID`;
+                replacements = { QuarterID };
             }
         } else {
             if (ClassType) {
-                return Connection.getInstance().select<IClassModel>(
-                    `SELECT *
-                    FROM Class
-                        JOIN Quarter ON Class.QuarterID = Quarter.ID
-                    WHERE Quarter.StartDate < NOW() AND Quarter.EndDate > NOW() AND Class.ClassType = :ClassType`, {
-                        replacements: { ClassType },
-                    },
-                );
+                statement += `WHERE Class.ClassType = :ClassType`;
+                replacements = { ClassType };
             } else {
-                return Connection.getInstance().select<IClassModel>(
-                    `SELECT *
-                    FROM Class
-                        JOIN Quarter ON Class.QuarterID = Quarter.ID
-                    WHERE Quarter.StartDate < NOW() AND Quarter.EndDate > NOW()`,
-                );
+                statement +=
+                    `LEFT JOIN Quarter ON Class.QuarterID = Quarter.ID
+                WHERE
+                    Quarter.StartDate <= DATE(NOW())
+                        AND Quarter.EndDate >= DATE(NOW())
+                        AND Quarter.QuarterType = 'normal'`;
+                replacements = {};
             }
         }
+        return Connection.getInstance().select<IListQuery>(statement, { replacements })
+            .pipe(
+                map((results) => results.map((result) => {
+                    return {
+                        ID: result.ID,
+                        date: result.ClassDate,
+                        maxStudent: result.MaxSeat,
+                        name: result.ClassName,
+                        room: result.RoomName,
+                        student: result.StudentCount,
+                        subject: result.ClassSubject,
+                        tutor: result.NicknameEn,
+                        tutorID: result.TutorID,
+                        type: result.ClassType,
+                    };
+                })),
+        );
     }
 
     public delete(
@@ -144,7 +207,7 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
 
     public getSubmission(
         TutorID: number,
-    ): Observable<ClassCard[]> {
+    ): Observable<ISubmissionResult[]> {
         return Connection.getInstance().select<ISubmissionQuery>(
             `SELECT
                 Class.ID,
@@ -175,31 +238,43 @@ export class Class extends SequelizeModel<ClassInstance, IClassModel> {
                 Quarter.StartDate < NOW()
                     AND Quarter.EndDate > NOW()
                     AND Class.TutorID = :TutorID`, {
-                replacements: { TutorID: 99023 },
+                replacements: { TutorID },
             },
         ).pipe(
             map((classes) => {
-                // TODO: Fill submission array
-                const groupedClasses: ClassCard[] = [];
+                const groupedClasses: ISubmissionResult[] = [];
                 for (const classDetail of classes) {
                     const index = _.findIndex(groupedClasses, (o) => o.ID === classDetail.ID);
                     if (index !== -1) {
-                        groupedClasses[index].addSubmission({ status: classDetail.SubmissionState, count: classDetail.SubmissionTimes });
+                        groupedClasses[index].submissions.push({ status: classDetail.SubmissionState, count: classDetail.SubmissionTimes });
                     } else {
                         const submission: Array<{ status: string, count: number }> = [];
                         if (classDetail.SubmissionState !== null && classDetail.SubmissionTimes !== null) {
                             submission.push({ status: classDetail.SubmissionState, count: classDetail.SubmissionTimes });
                         }
-                        groupedClasses.push(new ClassCard(
-                            classDetail.ID,
-                            classDetail.ClassName,
-                            classDetail.ClassTimes,
-                            submission,
-                            classDetail.ClassSubject,
-                            classDetail.ClassDate,
-                            classDetail.StudentCount,
-                            classDetail.RoomName,
-                        ));
+                        groupedClasses.push({
+                            ID: classDetail.ID,
+                            date: classDetail.ClassDate,
+                            maxSubmission: classDetail.ClassTimes,
+                            room: classDetail.RoomName,
+                            student: classDetail.StudentCount,
+                            subject: classDetail.ClassSubject,
+                            submissions: submission,
+                            title: classDetail.ClassName,
+                        });
+                    }
+                }
+                for (const eachClass of groupedClasses) {
+                    if (eachClass.maxSubmission !== null) {
+                        for (let i = 0; i < eachClass.maxSubmission; i++) {
+                            if (_.findIndex(eachClass.submissions, (o) => o.count === i + 1) === -1) {
+                                eachClass.submissions.push({
+                                    count: i + 1,
+                                    status: SubmissionState.empty,
+                                });
+                            }
+                        }
+                        eachClass.submissions.sort((a, b) => a.count - b.count);
                     }
                 }
                 return groupedClasses;

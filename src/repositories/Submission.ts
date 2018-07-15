@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Connection } from "../models/Connection";
@@ -23,6 +24,7 @@ interface IClassSubmissionQuery {
     SubmissionName: string;
     ChatMessage: string;
     SubmissionState: SubmissionState;
+    ClassTimes: number;
 }
 
 export class Submission extends SequelizeModel<SubmissionInstance, ISubmissionModel> {
@@ -89,7 +91,8 @@ export class Submission extends SequelizeModel<SubmissionInstance, ISubmissionMo
                 Submission.SubmissionTimes,
                 Submission.SubmissionName,
                 SubmissionChat.ChatMessage,
-                Submission.SubmissionState
+                Submission.SubmissionState,
+                Class.ClassTimes
             FROM
                 Submission
                     LEFT JOIN
@@ -101,13 +104,18 @@ export class Submission extends SequelizeModel<SubmissionInstance, ISubmissionMo
                         SubmissionChat
                     WHERE
                         SubmissionChat.SubmissionID = Submission.ID))
+                    LEFT JOIN
+                Class ON Submission.ClassID = Class.ID
             WHERE
                 ClassID = :ClassID`, {
                 replacements: { ClassID },
             },
         ).pipe(
             map((results) => {
-                return results.map((result) => {
+                if (results.length === 0) {
+                    return [];
+                }
+                const newResult = results.map((result) => {
                     return {
                         ID: result.ID,
                         files: [],
@@ -117,6 +125,22 @@ export class Submission extends SequelizeModel<SubmissionInstance, ISubmissionMo
                         title: result.SubmissionName,
                     };
                 });
+                if (results[0].ClassTimes) {
+                    for (let i = 0; i < results[0].ClassTimes; i++) {
+                        if (_.findIndex(results, (o) => o.SubmissionTimes === i + 1) === -1) {
+                            newResult.push({
+                                ID: null,
+                                files: [],
+                                lecture: i + 1,
+                                message: null,
+                                status: SubmissionState.empty,
+                                title: null,
+                            });
+                        }
+                    }
+                }
+                newResult.sort((a, b) => a.lecture - b.lecture);
+                return newResult;
             }),
         );
     }

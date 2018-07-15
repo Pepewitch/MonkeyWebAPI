@@ -2,21 +2,22 @@ import { Router } from "express";
 import { body, oneOf, param, query } from "express-validator/check";
 import { ClassType } from "../../../models/v1/class";
 import { Class } from "../../../repositories/Class";
-import { authenticateRequest, authorizeRequestWithAdminPosition, authorizeRequestWithTutorPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
+import { authorizeRequestWithAdminPosition, authorizeRequestWithTutorPosition, completionHandler, errorHandler, validateRequest } from "../util/requestValidator";
 
 export const router = Router();
 
 router.get(
-    "/:classID",
-    authorizeRequestWithTutorPosition,
-    param("classID").isInt(),
+    "/",
+    authorizeRequestWithAdminPosition,
+    query("quarterID").isInt().optional(),
+    query("type").isIn(Object.keys(ClassType)).optional(),
     validateRequest,
     (req, res) => {
         Class
             .getInstance()
-            .info(req.params.classID)
+            .list(req.body.type, req.body.quarter)
             .subscribe(
-                (info) => res.status(200).send({ info }),
+                (classes) => res.status(200).send({ classes }),
                 errorHandler(res),
         );
     },
@@ -38,6 +39,22 @@ router.get(
     },
 );
 
+router.get(
+    "/:classID",
+    authorizeRequestWithTutorPosition,
+    param("classID").isInt(),
+    validateRequest,
+    (req, res) => {
+        Class
+            .getInstance()
+            .info(req.params.classID)
+            .subscribe(
+                (info) => res.status(200).send({ info }),
+                errorHandler(res),
+        );
+    },
+);
+
 router.post(
     "/course",
     authorizeRequestWithAdminPosition,
@@ -45,6 +62,7 @@ router.post(
     body("quarterID").isInt(),
     body("classSubject").isString(),
     body("classDate").isISO8601(),
+    body("price").isInt(),
     body("tutorID").isInt(),
     validateRequest,
     (req, res) => {
@@ -55,8 +73,9 @@ router.post(
                 req.body.quarterID,
                 req.body.classDate,
                 req.body.classSubject,
-                req.body.tutorID,
                 ClassType.course,
+                req.body.price,
+                req.body.tutorID,
         ).subscribe(completionHandler(res));
     },
 );
@@ -68,17 +87,14 @@ router.post(
     body("quarterID").isInt(),
     body("classSubject").isString(),
     body("classDate").isISO8601(),
-    body("tutorID").isInt(),
     validateRequest,
     (req, res) => {
         Class
             .getInstance()
-            .add(
-                req.body.className,
+            .add(req.body.className,
                 req.body.quarterID,
                 req.body.classDate,
                 req.body.classSubject,
-                req.body.tutorID,
                 ClassType.skill,
         ).subscribe(completionHandler(res));
     },
@@ -95,10 +111,10 @@ router.post(
     (req, res) => {
         Class
             .getInstance()
-            .addWithoutTutor(
+            .add(
                 req.body.className,
                 req.body.quarterID,
-                req.body.classDate,
+                req.body.classSubject,
                 req.body.classSubject,
                 ClassType.hybrid,
         ).subscribe(completionHandler(res));

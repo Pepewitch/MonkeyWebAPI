@@ -5,6 +5,13 @@ import { IQuarterModel, QuarterInstance, quarterModel, QuarterType as Type } fro
 import { SequelizeModel } from "./SequelizeModel";
 import { partialOf } from "./util/ObjectMapper";
 
+interface IQuarterQuery {
+    ID: number;
+    QuarterName: string;
+    StartDate: Date;
+    EndDate: Date;
+}
+
 export interface IQuarterResult {
     ID: number;
     name: string;
@@ -41,7 +48,7 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
     public defaultQuarter(
         type = Type.normal,
     ): Observable<IQuarterResult> {
-        return Connection.getInstance().select<IQuarterModel>(
+        return Connection.getInstance().select<IQuarterQuery>(
             `SELECT * FROM Quarter WHERE StartDate <= DATE(NOW()) AND EndDate >= DATE(NOW()) AND QuarterType = :type`,
             {
                 replacements: { type },
@@ -86,7 +93,7 @@ export class Quarter extends SequelizeModel<QuarterInstance, IQuarterModel> {
         );
     }
 
-    private mapResult(quarter: IQuarterModel): IQuarterResult {
+    private mapResult(quarter: IQuarterQuery): IQuarterResult {
         return {
             ID: quarter.ID,
             endDate: quarter.EndDate,
