@@ -1,7 +1,7 @@
+import { from, Observable } from "rxjs";
 import { Connection } from "../models/Connection";
 import { HBSheetInstance, hbSheetModel, IHBSheetModel } from "../models/v1/HBSheet";
 import { SequelizeModel } from "./SequelizeModel";
-import { Observable, from } from "rxjs";
 
 export class HBSheet extends SequelizeModel<HBSheetInstance, IHBSheetModel> {
 
