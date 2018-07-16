@@ -2,7 +2,7 @@ import Sequelize from "sequelize";
 import { topicModel } from "./topic";
 
 export interface IHBSheetModel {
-    ID: number;
+    ID?: number;
     TopicID: number;
     SheetLevel: string;
     SheetNumber: number;
