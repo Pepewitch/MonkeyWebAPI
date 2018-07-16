@@ -18,6 +18,7 @@ export class HBSheet extends SequelizeModel<HBSheetInstance, IHBSheetModel> {
         super();
         this.model = hbSheetModel(Connection.getInstance().getConnection());
     }
+
     public add(
         TopicID: number,
         SheetLevel: string,
