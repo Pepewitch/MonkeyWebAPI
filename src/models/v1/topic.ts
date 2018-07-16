@@ -1,7 +1,7 @@
 import Sequelize from "sequelize";
 
 export interface ITopicModel {
-    ID: number;
+    ID?: number;
     TopicSubj: string;
     Class: string;
     Topic: string;
